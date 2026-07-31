@@ -339,6 +339,9 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
 
   useBodyScrollLock(isMenuOpen || isCartOpen);
 
+  // Calculate total items for absolute positioning logic
+  const totalNavItems = STATIC_NAV_LINKS.length + (categories?.length ?? 0);
+
   return (
     <div>
       <header
@@ -617,16 +620,17 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
                     (sc) => sc._id === hoveredSubCatId,
                   );
                   
-                  // --- Smart Positioning Logic to prevent overflow outside max-w-screen-2xl ---
-                  const catCount = categories?.length ?? 0;
+                  // --- Smart Absolute Positioning Logic ---
+                  // Shop(0), Honey(1) -> totalNavItems = 2. Honey absoluteIndex = 1
+                  const absoluteIndex = STATIC_NAV_LINKS.length + catIndex;
                   let flyoutPositionClass = "left-0";
-                  
-                  if (catCount > 0) {
-                    if (catCount <= 2) {
-                      flyoutPositionClass = catIndex === 0 ? "left-0" : "right-0";
-                    } else if (catIndex < catCount / 3) {
+
+                  if (totalNavItems > 0) {
+                    if (totalNavItems <= 2) {
+                      flyoutPositionClass = absoluteIndex === 0 ? "left-0" : "right-0";
+                    } else if (absoluteIndex < totalNavItems / 3) {
                       flyoutPositionClass = "left-0";
-                    } else if (catIndex < (catCount * 2) / 3) {
+                    } else if (absoluteIndex < (totalNavItems * 2) / 3) {
                       flyoutPositionClass = "left-1/2 -translate-x-1/2";
                     } else {
                       flyoutPositionClass = "right-0";

@@ -56,7 +56,7 @@ const app = express();
 // ==========================================
 const corsOptions = {
   origin: [
-    "https://velourabd.vercel.app",
+    "https://grocera-hazel.vercel.app",
     "http://localhost:5173",
     "http://localhost:3000",
   ],

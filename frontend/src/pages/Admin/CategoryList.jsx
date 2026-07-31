@@ -30,7 +30,7 @@ import {
 } from "react-icons/fa";
 
 const isDevelopment = import.meta.env.DEV;
-const RENDER_BACKEND_URL = "https://veloura-fnoz.onrender.com";
+const RENDER_BACKEND_URL = "https://grocera-lwze.onrender.com";
 const API_URL = isDevelopment ? "" : RENDER_BACKEND_URL;
 const UPLOAD_URL = "/api/upload";
 
