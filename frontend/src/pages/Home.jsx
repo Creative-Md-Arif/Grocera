@@ -17,35 +17,68 @@ const Home = () => {
 
   return (
     <>
-      {/* ── SEO Optimization using Helmet ── */}
+      {/* SEO */}
       <Helmet>
-        <title>
-          Veloura – Premium Beauty & Personal Care Online Shop in Bangladesh
-        </title>
+        <title>GROCERA – Online Grocery & Food Shop in Bangladesh</title>
 
         <meta
           name="description"
-          content="Veloura offers premium beauty and personal care products, including skincare, cosmetics, hair care, and everyday essentials, crafted to bring out your natural beauty."
+          content="Shop fresh groceries, fruits, vegetables, beverages, snacks, cooking essentials, and daily household products at GROCERA with fast delivery across Bangladesh."
         />
 
         <meta
           name="keywords"
-          content="veloura bd, beauty products bangladesh, skincare bangladesh, cosmetics bangladesh, makeup bd, personal care bd, online beauty shop, premium cosmetics, skincare products, beauty essentials bd"
+          content="grocera, grocera bd, online grocery bangladesh, grocery shop bd, fresh vegetables, fresh fruits, daily essentials, food products, beverages, snacks, cooking essentials, online supermarket"
         />
 
         <meta
           property="og:title"
-          content="Veloura – Premium Beauty & Personal Care Online Shop in Bangladesh"
+          content="GROCERA – Online Grocery & Food Shop in Bangladesh"
         />
 
         <meta
           property="og:description"
-          content="Veloura offers premium beauty and personal care products, including skincare, cosmetics, hair care, and everyday essentials, crafted to bring out your natural beauty."
+          content="Shop fresh groceries, fruits, vegetables, beverages, snacks, cooking essentials, and daily household products at GROCERA with fast delivery across Bangladesh."
+        />
+
+        <meta
+          property="og:url"
+          content="https://grocera.com/"
+        />
+
+        <meta
+          property="og:image"
+          content="https://grocera.com/og-image.jpg"
         />
 
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="Veloura" />
+        <meta property="og:site_name" content="GROCERA" />
         <meta property="og:locale" content="en_BD" />
+
+        <meta
+          name="twitter:card"
+          content="summary_large_image"
+        />
+
+        <meta
+          name="twitter:title"
+          content="GROCERA – Online Grocery & Food Shop in Bangladesh"
+        />
+
+        <meta
+          name="twitter:description"
+          content="Buy fresh groceries, fruits, vegetables, beverages, snacks, and daily essentials online from GROCERA with fast delivery across Bangladesh."
+        />
+
+        <meta
+          name="twitter:image"
+          content="https://grocera.com/og-image.jpg"
+        />
+
+        <link
+          rel="canonical"
+          href="https://grocera.com/"
+        />
       </Helmet>
 
       <div
@@ -59,9 +92,7 @@ const Home = () => {
         {showHomeSections && <NewArrivals />}
         {showHomeSections && <CategoryPromoBanner />}
         {showHomeSections && <BestSellers />}
-
         {showHomeSections && <FeaturedReviews />}
-
         {showHomeSections && <FooterWideBanner />}
       </div>
     </>
