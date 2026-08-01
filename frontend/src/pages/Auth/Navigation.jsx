@@ -29,7 +29,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { useLogoutMutation } from "@redux/api/usersApiSlice";
 import { logout } from "@redux/features/auth/authSlice";
 import { CiShop, CiUser } from "react-icons/ci";
-// import NotificationBell from "../../components/NotificationBell";
 import Logo from "../../components/Logo";
 import CartIcon from "../../components/CartIcon";
 import FavoriteIcon from "../../components/FavoriteIcon";
@@ -45,7 +44,6 @@ const MOBILE_MENU_SECTIONS = [
   { to: "/shop", icon: <CiShop size={18} />, label: "Shop" },
 ];
 
-// ─── 1. Local useDebounce Hook ────────────────────────────────────────────────
 function useDebounce(value, delay = 400) {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
@@ -57,7 +55,6 @@ function useDebounce(value, delay = 400) {
   return debouncedValue;
 }
 
-// ─── 2. Memoized Desktop Search Form (light theme) ────────────────────────────
 const DesktopSearchForm = memo(function DesktopSearchForm({
   onDebouncedQueryChange,
   onSearchOpen,
@@ -83,7 +80,7 @@ const DesktopSearchForm = memo(function DesktopSearchForm({
       className="search-trigger hidden md:flex flex-1 max-w-2xl mx-auto"
     >
       <div
-        className={`w-full flex items-center bg-gray-100 rounded-md overflow-hidden border transition-colors ${
+        className={`w-full flex items-center bg-gray-100 rounded-md overflow-hidden border transition-colors duration-200 ${
           isSearchOpen && !mobileSearchActive
             ? "border-[#D4A843] bg-white"
             : "border-transparent"
@@ -96,11 +93,12 @@ const DesktopSearchForm = memo(function DesktopSearchForm({
           onFocus={onSearchOpen}
           placeholder="Search in....."
           className="flex-1 min-w-0 py-2.5 sm:py-3 pl-4 text-[13px] sm:text-sm font-trebuchet text-gray-800 bg-transparent outline-none placeholder:text-gray-400"
+          aria-label="Search products"
         />
         <button
           type="submit"
-          className="flex items-center gap-1.5 px-4 sm:px-5 py-2.5 sm:py-3 text-gray-500 hover:text-[#D4A843] transition-colors"
-          aria-label="Search"
+          className="flex items-center gap-1.5 px-4 sm:px-5 py-2.5 sm:py-3 text-gray-500 hover:text-[#D4A843] transition-colors duration-200"
+          aria-label="Submit search"
         >
           <IoSearchOutline size={18} />
         </button>
@@ -119,7 +117,6 @@ DesktopSearchForm.propTypes = {
   mobileSearchActive: PropTypes.bool.isRequired,
 };
 
-// ─── 3. Stacked icon+label button (Track Order / Wishlist / Cart / Account) ──
 const IconLabelLink = memo(function IconLabelLink({
   to,
   icon,
@@ -132,7 +129,7 @@ const IconLabelLink = memo(function IconLabelLink({
     <Link
       to={to}
       onClick={onClick}
-      className={`flex flex-col items-center justify-center gap-0.5 text-gray-600 hover:text-[#D4A843] transition-colors ${className}`}
+      className={`flex flex-col items-center justify-center gap-0.5 text-gray-600 hover:text-[#D4A843] transition-colors duration-200 ${className}`}
     >
       <span className="relative flex items-center justify-center">
         {icon}
@@ -158,7 +155,6 @@ IconLabelLink.propTypes = {
   className: PropTypes.string,
 };
 
-// ─── 4. Main Navigation Component ─────────────────────────────────────────────
 const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
   const { userInfo } = useSelector((state) => state.auth);
   const cartItemsCount = useSelector(
@@ -176,15 +172,13 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
   const [logoutApiCall] = useLogoutMutation();
   const sidebarRef = useRef(null);
 
-  // ── Search state ──
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [mobileSearchActive, setMobileSearchActive] = useState(false);
   const mobileSearchInputRef = useRef(null);
 
-  // ── Cascading category-dropdown state (desktop) ──
-  const [hoveredCatId, setHoveredCatId] = useState(null); // level 1 (top nav item)
-  const [hoveredSubCatId, setHoveredSubCatId] = useState(null); // level 2 (column item)
+  const [hoveredCatId, setHoveredCatId] = useState(null);
+  const [hoveredSubCatId, setHoveredSubCatId] = useState(null);
 
   const { data: categories, isLoading: categoriesLoading } =
     useFetchCategoriesQuery();
@@ -262,7 +256,6 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
     setHoveredSubCatId(null);
   }, [location.pathname, closeSearch]);
 
-  // Close profile dropdown on outside click
   useEffect(() => {
     if (!tabOpen) return;
     const handle = (e) => {
@@ -279,7 +272,6 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
     };
   }, [tabOpen]);
 
-  // Close search dropdown on outside click
   useEffect(() => {
     if (!isSearchOpen) return;
     const handle = (e) => {
@@ -301,7 +293,6 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
     };
   }, [isSearchOpen, closeSearch]);
 
-  // Escape closes the search dropdown
   useEffect(() => {
     if (!isSearchOpen) return;
     const onKey = (e) => {
@@ -311,7 +302,6 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
     return () => document.removeEventListener("keydown", onKey);
   }, [isSearchOpen, closeSearch]);
 
-  // ── Search Handlers ──
   const handleDebouncedQueryChange = useCallback((query) => {
     setDebouncedSearchQuery(query);
   }, []);
@@ -339,9 +329,6 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
 
   useBodyScrollLock(isMenuOpen || isCartOpen);
 
-  // Calculate total items for absolute positioning logic
-  const totalNavItems = STATIC_NAV_LINKS.length + (categories?.length ?? 0);
-
   return (
     <div>
       <header
@@ -350,31 +337,29 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
           scrolled ? "shadow-md shadow-black/5" : ""
         }`}
       >
-        {/* ══════════ ROW 1 — Logo / Search / Icons (light) ══════════ */}
         <div className="border-b border-gray-200">
           <div className="relative max-w-screen-2xl mx-auto h-14 sm:h-16 lg:h-20 flex items-center gap-3 lg:gap-6 px-4">
-            {/* ── MOBILE ONLY: hamburger + search icon ── */}
             <div className="flex md:hidden items-center gap-4">
               <button
-                className="relative flex flex-col items-center justify-center gap-[6px] w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-all duration-300 hover:bg-gray-100 group"
+                className="relative flex flex-col items-center justify-center gap-[6px] w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-colors duration-300 hover:bg-gray-100 group"
                 onClick={toggleMenu}
                 aria-label="Toggle Menu"
                 aria-expanded={isMenuOpen}
               >
                 <span
-                  className={`block h-[1.5px] w-5 rounded-full bg-[#1A1A1A] transition-all duration-300 ease-in-out group-hover:bg-[#D4A843] ${
+                  className={`block h-[1.5px] w-5 rounded-full bg-[#1A1A1A] transition-all duration-300 ease-in-out ${
                     isMenuOpen
                       ? "translate-y-[7.5px] rotate-45 !bg-[#D4A843]"
                       : ""
                   }`}
                 ></span>
                 <span
-                  className={`block h-[1.5px] w-5 rounded-full bg-[#1A1A1A] transition-all duration-300 ease-in-out group-hover:bg-[#D4A843] ${
+                  className={`block h-[1.5px] w-5 rounded-full bg-[#1A1A1A] transition-all duration-300 ease-in-out ${
                     isMenuOpen ? "opacity-0 translate-x-2" : ""
                   }`}
                 ></span>
                 <span
-                  className={`block h-[1.5px] w-5 rounded-full bg-[#1A1A1A] transition-all duration-300 ease-in-out group-hover:bg-[#D4A843] ${
+                  className={`block h-[1.5px] w-5 rounded-full bg-[#1A1A1A] transition-all duration-300 ease-in-out ${
                     isMenuOpen
                       ? "-translate-y-[7.5px] -rotate-45 !bg-[#D4A843]"
                       : ""
@@ -384,39 +369,38 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
 
               <button
                 onClick={openMobileSearch}
-                className="search-trigger relative group block"
+                className="relative group block"
                 aria-label="Open Search"
               >
-                <div className="flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 hover:bg-gray-100">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full transition-colors duration-300 hover:bg-gray-100">
                   <IoSearchOutline
-                    className="text-[#1A1A1A] group-hover:text-[#D4A843] transition-colors"
-                    size={17}
+                    className="text-[#1A1A1A] group-hover:text-[#D4A843] transition-colors duration-200"
+                    size={18}
                   />
                 </div>
               </button>
             </div>
 
-            {/* ── Hamburger for tablet (md–lg): categories live in sidebar until lg ── */}
             <button
-              className="hidden md:flex lg:hidden relative flex-col items-center justify-between gap-[6px] w-9 h-9 rounded-full transition-all duration-300 hover:bg-gray-100 group"
+              className="hidden md:flex lg:hidden relative flex-col items-center justify-center gap-[6px] w-9 h-9 rounded-full transition-colors duration-300 hover:bg-gray-100 group"
               onClick={toggleMenu}
               aria-label="Toggle Menu"
               aria-expanded={isMenuOpen}
             >
               <span
-                className={`block h-[1.5px] w-5 rounded-full bg-[#1A1A1A] transition-all duration-300 ease-in-out group-hover:bg-[#D4A843] ${
+                className={`block h-[1.5px] w-5 rounded-full bg-[#1A1A1A] transition-all duration-300 ease-in-out ${
                   isMenuOpen
                     ? "translate-y-[7.5px] rotate-45 !bg-[#D4A843]"
                     : ""
                 }`}
               ></span>
               <span
-                className={`block h-[1.5px] w-5 rounded-full bg-[#1A1A1A] transition-all duration-300 ease-in-out group-hover:bg-[#D4A843] ${
+                className={`block h-[1.5px] w-5 rounded-full bg-[#1A1A1A] transition-all duration-300 ease-in-out ${
                   isMenuOpen ? "opacity-0 translate-x-2" : ""
                 }`}
               ></span>
               <span
-                className={`block h-[1.5px] w-5 rounded-full bg-[#1A1A1A] transition-all duration-300 ease-in-out group-hover:bg-[#D4A843] ${
+                className={`block h-[1.5px] w-5 rounded-full bg-[#1A1A1A] transition-all duration-300 ease-in-out ${
                   isMenuOpen
                     ? "-translate-y-[7.5px] -rotate-45 !bg-[#D4A843]"
                     : ""
@@ -424,7 +408,6 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
               ></span>
             </button>
 
-            {/* ── Logo ── */}
             <Link
               to="/"
               onClick={handleNavClick}
@@ -435,7 +418,6 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
               <Logo />
             </Link>
 
-            {/* ── DESKTOP/TABLET: real inline search input ── */}
             <DesktopSearchForm
               onDebouncedQueryChange={handleDebouncedQueryChange}
               onSearchOpen={openDesktopSearch}
@@ -444,9 +426,7 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
               mobileSearchActive={mobileSearchActive}
             />
 
-            {/* ── Right icons (stacked icon + label) ── */}
             <div className="flex items-center gap-4 sm:gap-6 lg:gap-7 ml-auto lg:ml-0">
-              {/* Track Order */}
               <IconLabelLink
                 to="/track-order"
                 onClick={handleNavClick}
@@ -455,11 +435,10 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
                 className="hidden md:flex"
               />
 
-              {/* Sign In / Account */}
               {userInfo ? (
                 <div className="hidden lg:block relative lg:z-50">
                   <button
-                    className="profile-btn flex flex-col items-center justify-center gap-0.5 text-gray-600 hover:text-[#D4A843] transition-colors"
+                    className="profile-btn flex flex-col items-center justify-center gap-0.5 text-gray-600 hover:text-[#D4A843] transition-colors duration-200"
                     onClick={toggleTab}
                     aria-expanded={tabOpen}
                     aria-label="User menu"
@@ -471,7 +450,7 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
                   </button>
 
                   <div
-                    className={`dropdown-menu absolute top-full right-0 mt-3 w-44 sm:w-52 bg-white border border-gray-200 shadow-lg rounded-lg overflow-hidden transition-all duration-200 ${
+                    className={`dropdown-menu absolute top-full right-0 mt-3 w-44 sm:w-52 bg-white border border-gray-200 shadow-lg rounded-lg overflow-hidden transition-all duration-200 ease-in-out ${
                       tabOpen
                         ? "opacity-100 visible translate-y-0"
                         : "opacity-0 invisible -translate-y-2"
@@ -490,34 +469,34 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
                         <Link
                           to="/admin/dashboard"
                           onClick={handleNavClick}
-                          className="flex items-center gap-2 p-2 rounded-md font-poppins text-sm font-medium tracking-px text-[#1A1A1A] hover:bg-gray-100 hover:text-[#D4A843]"
+                          className="flex items-center gap-2 p-2 rounded-md font-poppins text-sm font-medium tracking-px text-[#1A1A1A] hover:bg-gray-100 hover:text-[#D4A843] transition-colors duration-200"
                         >
-                          <MdOutlineDashboard size={14} />{" "}
+                          <MdOutlineDashboard size={16} />{" "}
                           <span>Dashboard</span>
                         </Link>
                       )}
                       <Link
                         to="/profile"
                         onClick={handleNavClick}
-                        className="flex items-center gap-2 p-2 rounded-md font-poppins text-sm font-medium tracking-px text-[#1A1A1A] hover:bg-gray-100 hover:text-[#D4A843]"
+                        className="flex items-center gap-2 p-2 rounded-md font-poppins text-sm font-medium tracking-px text-[#1A1A1A] hover:bg-gray-100 hover:text-[#D4A843] transition-colors duration-200"
                       >
-                        <CgProfile size={14} /> <span>Profile</span>
+                        <CgProfile size={16} /> <span>Profile</span>
                       </Link>
                       <Link
                         to="/user-orders"
                         onClick={handleNavClick}
-                        className="flex items-center gap-2 p-2 rounded-md font-poppins text-sm font-medium tracking-px text-[#1A1A1A] hover:bg-gray-100 hover:text-[#D4A843]"
+                        className="flex items-center gap-2 p-2 rounded-md font-poppins text-sm font-medium tracking-px text-[#1A1A1A] hover:bg-gray-100 hover:text-[#D4A843] transition-colors duration-200"
                       >
-                        <LiaClipboardListSolid size={14} />{" "}
+                        <LiaClipboardListSolid size={16} />{" "}
                         <span>My Orders</span>
                       </Link>
                     </div>
                     <div className="p-1.5 border-t border-gray-200">
                       <button
                         onClick={logoutHandler}
-                        className="flex items-center gap-2 w-full p-2 rounded-md font-poppins text-sm font-medium tracking-px text-red-500 hover:bg-red-50"
+                        className="flex items-center gap-2 w-full p-2 rounded-md font-poppins text-sm font-medium tracking-px text-red-500 hover:bg-red-50 transition-colors duration-200"
                       >
-                        <IoIosLogOut size={14} /> <span>Logout</span>
+                        <IoIosLogOut size={16} /> <span>Logout</span>
                       </button>
                     </div>
                   </div>
@@ -532,18 +511,16 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
                 />
               )}
 
-              {/* Wishlist */}
-              <div className="hidden md:flex flex-col items-center justify-center gap-0.5 text-gray-600 hover:text-[#D4A843] transition-colors cursor-pointer">
+              <div className="hidden md:flex flex-col items-center justify-center gap-0.5 text-gray-600 hover:text-[#D4A843] transition-colors duration-200 cursor-pointer">
                 <FavoriteIcon onClick={handleNavClick} />
                 <span className="text-[10px] font-trebuchet font-semibold uppercase tracking-px">
                   Wishlist
                 </span>
               </div>
 
-              {/* Cart */}
               <div
                 onClick={() => dispatch(toggleCartSidebar(true))}
-                className="flex flex-col items-center justify-center gap-0.5 text-gray-600 hover:text-[#D4A843] transition-colors cursor-pointer"
+                className="flex flex-col items-center justify-center gap-0.5 text-gray-600 hover:text-[#D4A843] transition-colors duration-200 cursor-pointer"
                 aria-label="Open Cart"
               >
                 <CartIcon cartCount={cartItemsCount} />
@@ -552,47 +529,46 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
                 </span>
               </div>
 
-              {/* Mobile profile icon (compact, no label) */}
               <Link
                 to={userInfo ? "/profile" : "/login"}
                 onClick={handleNavClick}
                 className="lg:hidden relative group block"
                 aria-label="User Profile"
               >
-                <div className="flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 group-hover:bg-gray-100">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full transition-colors duration-300 group-hover:bg-gray-100">
                   <CiUser
-                    className="text-[#1A1A1A] group-hover:text-[#D4A843] transition-colors"
+                    className="text-[#1A1A1A] group-hover:text-[#D4A843] transition-colors duration-200"
                     size={18}
                   />
                 </div>
               </Link>
-
-              {/* {userInfo && (
-                <div className="hidden md:block text-gray-600 hover:text-[#D4A843] transition-colors">
-                  <NotificationBell />
-                </div>
-              )} */}
             </div>
           </div>
         </div>
 
-        {/* ══════════ ROW 2 — Category Bar (desktop only, dark, cascading dropdown) ══════════ */}
-        <div className="hidden lg:block bg-[#141414]">
+        <div
+          className="hidden lg:block bg-[#141414] relative z-40"
+          onMouseLeave={() => {
+            setHoveredCatId(null);
+            setHoveredSubCatId(null);
+          }}
+        >
           <div className="max-w-screen-2xl mx-auto px-4">
-            <ul className="flex items-center justify-between gap-0.5">
+            <ul className="flex items-center gap-1">
               {STATIC_NAV_LINKS.map((link) => (
                 <li key={link.to} className="flex items-center">
                   <Link
                     to={link.to}
-                    className={`relative py-2.5 text-[13px] font-playfair font-bold uppercase tracking-normal transition-colors whitespace-nowrap ${
+                    onClick={handleNavClick}
+                    className={`relative px-1 py-2.5 text-[12.50px] font-playfair font-bold uppercase tracking-normal transition-colors duration-200 whitespace-nowrap ${
                       isActive(link.to)
                         ? "text-[#D4A843]"
-                        : "text-gray-300 hover:text-white"
+                        : "text-white hover:text-[#D4A843]"
                     }`}
                   >
                     {link.label}
                     {isActive(link.to) && (
-                      <span className="absolute bottom-0 left-1.5 right-1.5 h-[2px] bg-[#D4A843] rounded-full"></span>
+                      <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#D4A843] rounded-full"></span>
                     )}
                   </Link>
                 </li>
@@ -602,145 +578,174 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
                 <>
                   {[1, 2, 3, 4, 5, 6].map((i) => (
                     <li key={`skel-top-${i}`} className="flex items-center">
-                      <div className="relative px-1.5 py-2.5 flex items-center gap-1 whitespace-nowrap">
-                        <div className="w-12 h-2.5 bg-white/20 animate-pulse rounded"></div>
-                        <div className="w-1.5 h-1.5 bg-white/20 animate-pulse rounded-full"></div>
+                      <div className="relative px-1 py-2.5 flex items-center gap-1 whitespace-nowrap">
+                        <div className="w-16 h-3 bg-white/20 animate-pulse rounded-sm"></div>
+                        <div className="w-2 h-2 bg-white/20 animate-pulse rounded-full"></div>
                       </div>
                     </li>
                   ))}
                 </>
               ) : (
-                categories?.map((cat, catIndex) => {
-                  const hasChildren = cat.children?.length > 0;
-                  const isOpen = hoveredCatId === cat._id;
-                  const half = Math.ceil((cat.children?.length ?? 0) / 2);
-                  const leftCol = cat.children?.slice(0, half) ?? [];
-                  const rightCol = cat.children?.slice(half) ?? [];
-                  const activeSubCat = cat.children?.find(
-                    (sc) => sc._id === hoveredSubCatId,
-                  );
-                  
-                  // --- Smart Absolute Positioning Logic ---
-                  // Shop(0), Honey(1) -> totalNavItems = 2. Honey absoluteIndex = 1
-                  const absoluteIndex = STATIC_NAV_LINKS.length + catIndex;
-                  let flyoutPositionClass = "left-0";
-
-                  if (totalNavItems > 0) {
-                    if (totalNavItems <= 2) {
-                      flyoutPositionClass = absoluteIndex === 0 ? "left-0" : "right-0";
-                    } else if (absoluteIndex < totalNavItems / 3) {
-                      flyoutPositionClass = "left-0";
-                    } else if (absoluteIndex < (totalNavItems * 2) / 3) {
-                      flyoutPositionClass = "left-1/2 -translate-x-1/2";
-                    } else {
-                      flyoutPositionClass = "right-0";
-                    }
-                  }
-
-                  return (
-                    <li
-                      key={cat._id}
-                      className="flex items-center relative"
-                      onMouseEnter={() => {
-                        setHoveredCatId(cat._id);
-                        setHoveredSubCatId(null);
-                      }}
-                      onMouseLeave={() => {
-                        setHoveredCatId(null);
-                        setHoveredSubCatId(null);
-                      }}
+                categories?.map((cat) => (
+                  <li
+                    key={cat._id}
+                    className="flex items-center relative"
+                    onMouseEnter={() => {
+                      setHoveredCatId(cat._id);
+                      setHoveredSubCatId(null);
+                    }}
+                  >
+                    <Link
+                      to={`/shop?category=${cat._id}`}
+                      onClick={handleNavClick}
+                      className={`relative px-1 py-2.5 text-[12.50px] font-playfair font-bold uppercase tracking transition-colors duration-200 flex items-center gap-0.5 whitespace-nowrap ${
+                        isActive(`/shop?category=${cat._id}`)
+                          ? "text-[#D4A843]"
+                          : "text-white hover:text-[#D4A843]"
+                      }`}
                     >
-                      <Link
-                        to={`/shop?category=${cat._id}`}
-                        className={`relative px-1.5 py-2.5 text-[13px] font-playfair font-bold uppercase tracking transition-colors flex items-center gap-0.5 whitespace-nowrap ${
-                          isActive(`/shop?category=${cat._id}`)
-                            ? "text-[#D4A843]"
-                            : "text-gray-300 hover:text-white"
-                        }`}
-                      >
-                        <span>{cat.name}</span>
-                        {hasChildren && (
-                          <IoChevronDownOutline
-                            size={8}
-                            className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
-                          />
-                        )}
-                      </Link>
-                      {isActive(`/shop?category=${cat._id}`) && (
-                        <span className="absolute bottom-0 left-1.5 right-1.5 h-[2px] bg-[#D4A843] rounded-full"></span>
+                      <span>{cat.name}</span>
+                      {cat.children?.length > 0 && (
+                        <IoChevronDownOutline
+                          size={10}
+                          className={`transition-transform duration-200 ${
+                            hoveredCatId === cat._id ? "rotate-180" : ""
+                          }`}
+                        />
                       )}
-
-                      {/* ── Cascading flyout: col 1+2 = subcategories, col 3 = children of hovered subcategory ── */}
-                      {hasChildren && isOpen && (
-                        <div
-                          className={`absolute top-full flex bg-white border border-gray-200 z-50 ${flyoutPositionClass}`}
-                        >
-                          {[leftCol, rightCol].map(
-                            (col, colIdx) =>
-                              col.length > 0 && (
-                                <ul
-                                  key={colIdx}
-                                  className="w-56 py-2 border-r border-gray-100 last:border-r-0"
-                                >
-                                  {col.map((subCat) => (
-                                    <li
-                                      key={subCat._id}
-                                      onMouseEnter={() =>
-                                        setHoveredSubCatId(subCat._id)
-                                      }
-                                    >
-                                      <Link
-                                        to={`/shop?category=${subCat._id}`}
-                                        onClick={handleNavClick}
-                                        className={`flex items-center justify-between gap-2 px-4 py-2 text-[13px] font-trebuchet tracking-px transition-colors ${
-                                          hoveredSubCatId === subCat._id
-                                            ? "bg-[#D4A843] text-white font-semibold"
-                                            : "text-gray-700 hover:bg-gray-50"
-                                        }`}
-                                      >
-                                        <span className="truncate">
-                                          {subCat.name}
-                                        </span>
-                                        {subCat.children?.length > 0 && (
-                                          <IoChevronForward size={11} />
-                                        )}
-                                      </Link>
-                                    </li>
-                                  ))}
-                                </ul>
-                              ),
-                          )}
-
-                          {activeSubCat?.children?.length > 0 && (
-                            <ul className="w-56 py-2 max-h-[70vh] overflow-y-auto">
-                              {activeSubCat.children.map((subSubCat) => (
-                                <li key={subSubCat._id}>
-                                  <Link
-                                    to={`/shop?category=${subSubCat._id}`}
-                                    onClick={handleNavClick}
-                                    className="block px-4 py-2 text-[13px] font-trebuchet tracking-px text-gray-700 hover:bg-gray-50 hover:text-[#D4A843] transition-colors truncate"
-                                  >
-                                    {subSubCat.name}
-                                  </Link>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </div>
-                      )}
-                    </li>
-                  );
-                })
+                    </Link>
+                    {isActive(`/shop?category=${cat._id}`) && (
+                      <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#D4A843] rounded-full"></span>
+                    )}
+                  </li>
+                ))
               )}
             </ul>
           </div>
+
+          {hoveredCatId && categories && (
+            <div
+              className={`absolute inset-x-0 mx-auto max-w-screen-2xl bg-white border border-gray-200 shadow-lg rounded-b-md z-50 transition-all duration-200 ease-in-out ${
+                hoveredCatId ? "opacity-100 visible" : "opacity-0 invisible"
+              }`}
+              style={{ top: '100%' }}
+              onMouseEnter={() => setHoveredCatId(hoveredCatId)}
+              onMouseLeave={() => {
+                setHoveredCatId(null);
+                setHoveredSubCatId(null);
+              }}
+            >
+              <div className="flex">
+                {(() => {
+                  const activeCategory = categories.find(
+                    (cat) => cat._id === hoveredCatId,
+                  );
+                  if (!activeCategory || !activeCategory.children?.length)
+                    return null;
+
+                  const subCatCount = activeCategory.children.length;
+                  const SPLIT_THRESHOLD = 8;
+                  const shouldSplitColumns = subCatCount > SPLIT_THRESHOLD;
+                  const half = shouldSplitColumns
+                    ? Math.ceil(subCatCount / 2)
+                    : subCatCount;
+                  const firstColItems = activeCategory.children.slice(0, half);
+                  const secondColItems = shouldSplitColumns
+                    ? activeCategory.children.slice(half)
+                    : [];
+
+                  const activeSubCategory = activeCategory.children.find(
+                    (subCat) => subCat._id === hoveredSubCatId,
+                  );
+
+                  return (
+                    <>
+                      {firstColItems.length > 0 && (
+                        <ul className="w-56 py-2 border-r border-gray-100">
+                          {firstColItems.map((subCat) => (
+                            <li
+                              key={subCat._id}
+                              onMouseEnter={() =>
+                                setHoveredSubCatId(subCat._id)
+                              }
+                            >
+                              <Link
+                                to={`/shop?category=${subCat._id}`}
+                                onClick={handleNavClick}
+                                className={`flex items-center justify-between gap-2 px-4 py-2 text-[13px] font-trebuchet tracking-px transition-colors duration-200 ${
+                                  hoveredSubCatId === subCat._id
+                                    ? "bg-[#D4A843] text-white font-semibold"
+                                    : "text-gray-700 hover:bg-gray-50"
+                                }`}
+                              >
+                                <span className="truncate">
+                                  {subCat.name}
+                                </span>
+                                {subCat.children?.length > 0 && (
+                                  <IoChevronForward size={12} />
+                                )}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+
+                      {secondColItems.length > 0 && (
+                        <ul className="w-56 py-2 border-r border-gray-100">
+                          {secondColItems.map((subCat) => (
+                            <li
+                              key={subCat._id}
+                              onMouseEnter={() =>
+                                setHoveredSubCatId(subCat._id)
+                              }
+                            >
+                              <Link
+                                to={`/shop?category=${subCat._id}`}
+                                onClick={handleNavClick}
+                                className={`flex items-center justify-between gap-2 px-4 py-2 text-[13px] font-trebuchet tracking-px transition-colors duration-200 ${
+                                  hoveredSubCatId === subCat._id
+                                    ? "bg-[#D4A843] text-white font-semibold"
+                                    : "text-gray-700 hover:bg-gray-50"
+                                }`}
+                              >
+                                <span className="truncate">
+                                  {subCat.name}
+                                </span>
+                                {subCat.children?.length > 0 && (
+                                  <IoChevronForward size={12} />
+                                )}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+
+                      {activeSubCategory?.children?.length > 0 && (
+                        <ul className="w-56 py-2 max-h-[70vh] overflow-y-auto">
+                          {activeSubCategory.children.map((subSubCat) => (
+                            <li key={subSubCat._id}>
+                              <Link
+                                to={`/shop?category=${subSubCat._id}`}
+                                onClick={handleNavClick}
+                                className="block px-4 py-2 text-[13px] font-trebuchet tracking-px text-gray-700 hover:bg-gray-50 hover:text-[#D4A843] transition-colors duration-200 truncate"
+                              >
+                                {subSubCat.name}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </>
+                  );
+                })()}
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
-      {/* Spacer matching total fixed header height */}
       <div className="h-14 sm:h-16 lg:h-[120px]"></div>
 
-      {/* ── Search results dropdown ── */}
       <SearchOverlay
         open={isSearchOpen}
         onClose={closeSearch}
@@ -757,37 +762,39 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
         aria-hidden="true"
       />
 
-      {/* ── Mobile Sidebar (white theme, accordion categories) ── */}
       <aside
-        className={`fixed top-0 left-0 bottom-0 z-[1200] w-[80vw] sm:w-[300px] bg-white border-r border-gray-200 transition-transform duration-300 ease-in-out flex flex-col overflow-y-auto font-trebuchet ${
+        className={`fixed top-0 left-0 bottom-0 z-[1200] w-[85vw] sm:w-[320px] max-w-full bg-white border-r border-gray-200 transition-transform duration-300 ease-in-out flex flex-col overflow-y-auto font-trebuchet ${
           isMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         ref={sidebarRef}
       >
         <div className="p-4 border-b border-gray-200 bg-gray-50">
-          <Logo />
+          <Link to="/" onClick={handleNavClick} aria-label="Home">
+            <Logo />
+          </Link>
         </div>
 
-        <nav className="flex-1 p-2 overflow-y-auto">
+        <nav className="flex-1 p-2 overflow-y-auto custom-scrollbar">
           <ul>
             {MOBILE_MENU_SECTIONS.map((item) => (
               <li key={item.to}>
                 <Link
                   to={item.to}
                   onClick={handleNavClick}
-                  className={`flex items-center gap-3 p-2 rounded-lg text-[14px] font-normal font-trebuchet tracking-px uppercase transition-colors min-h-[40px] sm:min-h-[44px] ${
+                  className={`flex items-center gap-3 p-2 rounded-lg text-[14px] font-normal font-trebuchet tracking-px uppercase transition-colors duration-200 min-h-[40px] sm:min-h-[44px] ${
                     isActive(item.to)
                       ? "bg-gray-100 text-[#D4A843] border-l-2 border-[#D4A843]"
                       : "text-gray-600 hover:bg-gray-50 hover:text-[#1A1A1A]"
                   }`}
                 >
+                  {item.icon}
                   <span>{item.label}</span>
                 </Link>
               </li>
             ))}
 
-            <li className="mt-3 sm:mt-4 border-t border-gray-200 pt-3 sm:pt-4">
-              <p className="px-3 text-[12px] font-extrabold font-trebuchet uppercase text-gray-400 mb-2">
+            <li className="mt-4 border-t border-gray-100 pt-4">
+              <p className="px-3 text-[12px] font-bold font-trebuchet uppercase text-gray-500 mb-2">
                 Categories
               </p>
             </li>
@@ -797,8 +804,8 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
                 {[1, 2, 3, 4].map((i) => (
                   <li key={`skel-mob-${i}`} className="p-2.5">
                     <div className="flex justify-between items-center">
-                      <div className="w-24 h-3 bg-gray-200 animate-pulse rounded"></div>
-                      <div className="w-3 h-3 bg-gray-100 animate-pulse rounded-full"></div>
+                      <div className="w-28 h-3.5 bg-gray-200 animate-pulse rounded"></div>
+                      <div className="w-3.5 h-3.5 bg-gray-100 animate-pulse rounded-full"></div>
                     </div>
                   </li>
                 ))}
@@ -807,7 +814,7 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
               categories?.map((cat) => (
                 <li key={cat._id}>
                   <div
-                    className={`flex items-center justify-between p-2.5 sm:p-3 rounded-lg font-trebuchet text-[14px] font-semibold tracking-px uppercase transition-colors min-h-[40px] sm:min-h-[44px] cursor-pointer ${
+                    className={`flex items-center justify-between p-2.5 sm:p-3 rounded-lg font-trebuchet text-[14px] font-semibold tracking-px uppercase transition-colors duration-200 min-h-[40px] sm:min-h-[44px] cursor-pointer ${
                       mobileOpenCatId === cat._id
                         ? "bg-gray-100 text-[#D4A843]"
                         : "text-gray-700 hover:bg-gray-50 hover:text-[#1A1A1A]"
@@ -821,7 +828,7 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
                     <span>{cat.name}</span>
                     {cat.children?.length > 0 && (
                       <IoChevronDownOutline
-                        size={12}
+                        size={14}
                         className={`transition-transform duration-200 ${
                           mobileOpenCatId === cat._id ? "rotate-180" : ""
                         }`}
@@ -831,20 +838,20 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
 
                   {cat.children?.length > 0 && (
                     <div
-                      className={`overflow-hidden transition-all duration-300 ${
+                      className={`overflow-hidden transition-all duration-300 ease-in-out ${
                         mobileOpenCatId === cat._id
                           ? "max-h-[1000px]"
                           : "max-h-0"
                       }`}
                     >
-                      <ul className="pl-4 py-1 space-y-1">
+                      <ul className="pl-6 py-1 space-y-1">
                         {cat.children.map((subCat) => (
                           <Fragment key={subCat._id}>
                             <li>
                               <Link
                                 to={`/shop?category=${subCat._id}`}
                                 onClick={handleNavClick}
-                                className="block p-2 sm:p-2.5 rounded-md text-[14px] font-trebuchet font-medium tracking-px text-gray-700 hover:bg-gray-50 hover:text-[#D4A843] min-h-[36px] sm:min-h-[40px]"
+                                className="block p-2 sm:p-2.5 rounded-md text-[14px] font-trebuchet font-medium tracking-px text-gray-700 hover:bg-gray-50 hover:text-[#D4A843] min-h-[36px] sm:min-h-[40px] transition-colors duration-200"
                               >
                                 {subCat.name}
                               </Link>
@@ -854,7 +861,7 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
                                 <Link
                                   to={`/shop?category=${subSubCat._id}`}
                                   onClick={handleNavClick}
-                                  className="block pl-4 p-2 rounded-md text-[14px] font-normal font-trebuchet tracking-px text-gray-500 hover:bg-gray-50 hover:text-[#D4A843] min-h-[32px] sm:min-h-[36px]"
+                                  className="block pl-4 p-2 rounded-md text-[14px] font-normal font-trebuchet tracking-px text-gray-500 hover:bg-gray-50 hover:text-[#D4A843] min-h-[32px] sm:min-h-[36px] transition-colors duration-200"
                                 >
                                   {subSubCat.name}
                                 </Link>
@@ -871,32 +878,31 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
           </ul>
         </nav>
 
-        <div className="p-2 border-t border-gray-200 font-trebuchet">
+        <div className="p-3 border-t border-gray-200 font-trebuchet bg-gray-50">
           {userInfo ? (
             <div>
               <button
-                className="flex items-center gap-2 sm:gap-3 w-full p-2 sm:p-3 bg-gray-50 border border-gray-200 rounded-lg min-h-[40px] sm:min-h-[44px] text-[#1A1A1A] hover:bg-gray-100 transition-colors z-50"
+                className="flex items-center gap-2 sm:gap-3 w-full p-2 sm:p-3 bg-white border border-gray-200 rounded-lg min-h-[40px] sm:min-h-[44px] text-[#1A1A1A] hover:bg-gray-100 transition-colors duration-200 z-50"
                 onClick={toggleTab}
                 aria-expanded={tabOpen}
               >
                 <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-[#B88E2F] to-[#D4A843] flex items-center justify-center text-white flex-shrink-0">
-                  <CiUser size={14} />
+                  <CiUser size={16} />
                 </span>
 
                 <span className="flex-1 text-left text-[14px] font-semibold text-gray-700 tracking-px truncate">
                   {userInfo.username}
                 </span>
-                <span
-                  className={`text-[8px] text-gray-400 transition-transform duration-200 ${
+                <IoChevronDownOutline
+                  size={14}
+                  className={`text-gray-400 transition-transform duration-200 ${
                     tabOpen ? "rotate-180" : ""
                   }`}
-                >
-                  &#9660;
-                </span>
+                />
               </button>
 
               <div
-                className={`overflow-hidden transition-all duration-300 ${
+                className={`overflow-hidden transition-all duration-300 ease-in-out ${
                   tabOpen ? "max-h-[300px] mt-2" : "max-h-0"
                 }`}
               >
@@ -906,9 +912,9 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
                       <Link
                         to="/admin/dashboard"
                         onClick={handleNavClick}
-                        className="flex items-center gap-2 p-2 sm:p-2.5 rounded-md text-[14px] font-medium text-gray-700 tracking-px hover:bg-gray-50 hover:text-[#D4A843] min-h-[36px] sm:min-h-[40px] transition-colors"
+                        className="flex items-center gap-2 p-2 sm:p-2.5 rounded-md text-[14px] font-medium text-gray-700 tracking-px hover:bg-gray-50 hover:text-[#D4A843] min-h-[36px] sm:min-h-[40px] transition-colors duration-200"
                       >
-                        <MdOutlineDashboard size={14} /> <span>Dashboard</span>
+                        <MdOutlineDashboard size={16} /> <span>Dashboard</span>
                       </Link>
                     </li>
                   )}
@@ -916,36 +922,36 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
                     <Link
                       to="/profile"
                       onClick={handleNavClick}
-                      className="flex items-center gap-2 p-2 sm:p-2.5 rounded-md text-[14px] font-medium text-gray-700 tracking-px hover:bg-gray-50 hover:text-[#D4A843] min-h-[36px] sm:min-h-[40px] transition-colors"
+                      className="flex items-center gap-2 p-2 sm:p-2.5 rounded-md text-[14px] font-medium text-gray-700 tracking-px hover:bg-gray-50 hover:text-[#D4A843] min-h-[36px] sm:min-h-[40px] transition-colors duration-200"
                     >
-                      <CgProfile size={14} /> <span>Profile</span>
+                      <CgProfile size={16} /> <span>Profile</span>
                     </Link>
                   </li>
                   <li>
                     <Link
                       to="/user-orders"
                       onClick={handleNavClick}
-                      className="flex items-center gap-2 p-2 sm:p-2.5 rounded-md text-[14px] font-medium text-gray-700 tracking-px hover:bg-gray-50 hover:text-[#D4A843] min-h-[36px] sm:min-h-[40px] transition-colors"
+                      className="flex items-center gap-2 p-2 sm:p-2.5 rounded-md text-[14px] font-medium text-gray-700 tracking-px hover:bg-gray-50 hover:text-[#D4A843] min-h-[36px] sm:min-h-[40px] transition-colors duration-200"
                     >
-                      <LiaClipboardListSolid size={14} /> <span>My Orders</span>
+                      <LiaClipboardListSolid size={16} /> <span>My Orders</span>
                     </Link>
                   </li>
                   <li>
                     <Link
                       to="/track-order"
                       onClick={handleNavClick}
-                      className="flex items-center gap-2 p-2 sm:p-2.5 rounded-md text-[14px] font-medium text-gray-700 tracking-px hover:bg-gray-50 hover:text-[#D4A843] min-h-[36px] sm:min-h-[40px] transition-colors"
+                      className="flex items-center gap-2 p-2 sm:p-2.5 rounded-md text-[14px] font-medium text-gray-700 tracking-px hover:bg-gray-50 hover:text-[#D4A843] min-h-[36px] sm:min-h-[40px] transition-colors duration-200"
                     >
-                      <LiaShippingFastSolid size={14} />{" "}
+                      <LiaShippingFastSolid size={16} />{" "}
                       <span>Track Order</span>
                     </Link>
                   </li>
                   <li>
                     <button
                       onClick={logoutHandler}
-                      className="flex items-center gap-2 w-full p-2 sm:p-2.5 rounded-md text-[14px] font-medium text-red-500 tracking-px hover:bg-red-50 min-h-[36px] sm:min-h-[40px] transition-colors"
+                      className="flex items-center gap-2 w-full p-2 sm:p-2.5 rounded-md text-[14px] font-medium text-red-500 tracking-px hover:bg-red-50 min-h-[36px] sm:min-h-[40px] transition-colors duration-200"
                     >
-                      <IoIosLogOut size={14} /> <span>Logout</span>
+                      <IoIosLogOut size={16} /> <span>Logout</span>
                     </button>
                   </li>
                 </ul>
@@ -956,21 +962,21 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
               <Link
                 to="/track-order"
                 onClick={handleNavClick}
-                className="flex items-center justify-center gap-2 text-center p-2 sm:p-2.5 text-gray-600 border border-gray-200 rounded-lg text-[14px] font-semibold uppercase tracking-px hover:bg-gray-50 hover:text-[#1A1A1A] transition-all"
+                className="flex items-center justify-center gap-2 text-center p-2.5 sm:p-3 text-gray-600 border border-gray-200 rounded-lg text-[14px] font-semibold uppercase tracking-px hover:bg-gray-100 hover:text-[#1A1A1A] transition-all duration-200"
               >
-                <LiaShippingFastSolid size={16} /> Track Order
+                <LiaShippingFastSolid size={18} /> Track Order
               </Link>
               <Link
                 to="/login"
                 onClick={handleNavClick}
-                className="block text-center p-2 sm:p-2.5 border border-[#D4A843] text-[#D4A843] rounded-lg text-[14px] font-semibold uppercase tracking-px hover:bg-[#D4A843] hover:text-[#1A1A1A] transition-all"
+                className="block text-center p-2.5 sm:p-3 border border-[#D4A843] text-[#D4A843] rounded-lg text-[14px] font-semibold uppercase tracking-px hover:bg-[#D4A843] hover:text-white transition-all duration-200"
               >
                 Login
               </Link>
               <Link
                 to="/register"
                 onClick={handleNavClick}
-                className="block text-center p-2 sm:p-2.5 bg-gradient-to-r from-[#B88E2F] to-[#D4A843] text-white rounded-lg text-[14px] font-semibold uppercase tracking-px hover:opacity-90 transition-all shadow-md shadow-black/10"
+                className="block text-center p-2.5 sm:p-3 bg-gradient-to-r from-[#B88E2F] to-[#D4A843] text-white rounded-lg text-[14px] font-semibold uppercase tracking-px hover:opacity-90 transition-all duration-200 shadow-md shadow-black/10"
               >
                 Register
               </Link>
@@ -979,19 +985,18 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
         </div>
       </aside>
 
-      {/* ── Bottom Mobile Nav Bar ── */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-[1000] bg-[#D4A843] font-trebuchet">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-[1000] bg-[#D4A843] font-trebuchet shadow-lg border-t border-gold-300">
         <div className="grid grid-cols-5">
           <Link
             to="/"
             onClick={handleNavClick}
-            className={`flex flex-col items-center justify-center gap-1 py-2.5 transition-colors ${
+            className={`flex flex-col items-center justify-center gap-1 py-2.5 transition-colors duration-200 ${
               isActive("/")
                 ? "text-[#1A1A1A]"
                 : "text-white/85 hover:text-[#1A1A1A]"
             }`}
           >
-            <HiOutlineHome size={20} />
+            <HiOutlineHome size={22} />
             <span className="text-[10px] font-semibold uppercase tracking-px">
               Home
             </span>
@@ -1000,11 +1005,11 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
           <button
             type="button"
             onClick={toggleMenu}
-            className="flex flex-col items-center justify-center gap-1 py-2.5 text-white/85 hover:text-[#1A1A1A] transition-colors"
+            className="flex flex-col items-center justify-center gap-1 py-2.5 text-white/85 hover:text-[#1A1A1A] transition-colors duration-200"
             aria-label="Toggle Menu"
             aria-expanded={isMenuOpen}
           >
-            <HiOutlineSquares2X2 size={20} />
+            <HiOutlineSquares2X2 size={22} />
             <span className="text-[10px] font-semibold uppercase tracking-px">
               Menu
             </span>
@@ -1013,11 +1018,11 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
           <button
             type="button"
             onClick={() => dispatch(toggleCartSidebar(true))}
-            className="relative flex flex-col items-center justify-center gap-1 py-2.5 text-white/85 hover:text-[#1A1A1A] transition-colors"
+            className="relative flex flex-col items-center justify-center gap-1 py-2.5 text-white/85 hover:text-[#1A1A1A] transition-colors duration-200"
             aria-label="Open Cart"
           >
             <span className="relative flex items-center justify-center">
-              <HiOutlineShoppingBag size={20} />
+              <HiOutlineShoppingBag size={22} />
               {cartItemsCount > 0 && (
                 <span className="absolute -top-1.5 -right-2 flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-white text-[10px] font-bold text-[#1A1A1A]">
                   {cartItemsCount}
@@ -1032,10 +1037,10 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
           <button
             type="button"
             onClick={openMobileSearch}
-            className="flex flex-col items-center justify-center gap-1 py-2.5 text-white/85 hover:text-[#1A1A1A] transition-colors"
+            className="flex flex-col items-center justify-center gap-1 py-2.5 text-white/85 hover:text-[#1A1A1A] transition-colors duration-200"
             aria-label="Open Search"
           >
-            <IoSearchOutline size={20} />
+            <IoSearchOutline size={22} />
             <span className="text-[10px] font-semibold uppercase tracking-px">
               Search
             </span>
@@ -1044,13 +1049,13 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
           <Link
             to={userInfo ? "/profile" : "/login"}
             onClick={handleNavClick}
-            className={`flex flex-col items-center justify-center gap-1 py-2.5 transition-colors ${
+            className={`flex flex-col items-center justify-center gap-1 py-2.5 transition-colors duration-200 ${
               isActive("/profile")
                 ? "text-[#1A1A1A]"
                 : "text-white/85 hover:text-[#1A1A1A]"
             }`}
           >
-            <CiUser size={20} />
+            <CiUser size={22} />
             <span className="text-[10px] font-semibold uppercase tracking-px">
               Account
             </span>
