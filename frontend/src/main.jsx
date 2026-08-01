@@ -85,6 +85,10 @@ const ProductList = lazy(() => import("./pages/Admin/ProductList"));
 const ProductUpdate = lazy(() => import("./pages/Admin/ProductUpdate"));
 const AllProducts = lazy(() => import("./pages/Admin/AllProducts"));
 
+/* ✅ ব্র্যান্ড পেজ ইম্পোর্ট */
+const BrandListPage = lazy(() => import("./pages/Admin/brand/BrandListPage"));
+const BrandFormPage = lazy(() => import("./pages/Admin/brand/BrandFormPage"));
+
 const Favorites = lazy(() => import("./pages/Products/Favorites"));
 const CampaignDetails = lazy(() => import("./pages/Products/CampaignDetails"));
 const Shipping = lazy(() => import("./pages/Orders/Shipping"));
@@ -434,6 +438,33 @@ const router = createBrowserRouter(
             </DelayedSuspense>
           }
         />
+        
+        {/* ✅ ব্র্যান্ড রাউট যুক্ত করা হলো */}
+        <Route
+          path="/admin/brands"
+          element={
+            <DelayedSuspense>
+              <BrandListPage />
+            </DelayedSuspense>
+          }
+        />
+        <Route
+          path="/admin/brand/create"
+          element={
+            <DelayedSuspense>
+              <BrandFormPage />
+            </DelayedSuspense>
+          }
+        />
+        <Route
+          path="/admin/brand/:id/edit"
+          element={
+            <DelayedSuspense>
+              <BrandFormPage />
+            </DelayedSuspense>
+          }
+        />
+
         <Route
           path="allproductslist"
           element={

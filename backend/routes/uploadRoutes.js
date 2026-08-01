@@ -56,6 +56,34 @@ const uploadCategory = multer({
   limits: { fileSize: 3 * 1024 * 1024 }, // 3MB
 });
 
+// ==================== BRAND IMAGE STORAGE ====================
+const brandStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "uploads/brands",
+    allowed_formats: ["jpg", "jpeg", "png", "webp"],
+    transformation: [{ width: 500, crop: "limit", quality: "auto", fetch_format: "auto" }],
+  },
+});
+
+const uploadBrand = multer({
+  storage: brandStorage,
+  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB
+});
+
+// ==================== BRAND UPLOAD ====================
+router.post("/brand", uploadBrand.single("image"), (req, res) => {
+  if (req.file) {
+    res.status(200).send({
+      message: "Brand image uploaded successfully",
+      image: req.file.path, // এটি Cloudinary URL
+      url: req.file.path,
+    });
+  } else {
+    res.status(400).send({ message: "No image file provided" });
+  }
+});
+
 // ==================== SITE LOGO STORAGE ====================
 const logoStorage = new CloudinaryStorage({
   cloudinary: cloudinary,

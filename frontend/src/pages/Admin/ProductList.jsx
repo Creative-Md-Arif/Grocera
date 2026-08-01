@@ -7,6 +7,7 @@ import {
   useUploadProductImageMutation,
 } from "@redux/api/productApiSlice";
 import { useFetchCategoriesQuery } from "@redux/api/categoryApiSlice";
+import { useGetBrandsQuery } from "@redux/api/brandApiSlice";
 import { toast } from "react-toastify";
 import AdminMenu from "./AdminMenu";
 import {
@@ -114,6 +115,9 @@ const ProductList = () => {
   const [createProduct] = useCreateProductMutation();
   const { data: categories, isLoading: isCatLoading } =
     useFetchCategoriesQuery();
+
+  const { data: brandsData } = useGetBrandsQuery({ isActive: "true" });
+  const brands = brandsData?.brands || [];
 
   // --- Handlers wrapped in useCallback for performance ---
   const handlePriceChange = useCallback(
@@ -673,14 +677,19 @@ const ProductList = () => {
                     </div>
 
                     <div>
-                      <label className={labelClass}>Brand Mark</label>
-                      <input
-                        type="text"
+                      <label className={labelClass}>Brand</label>
+                      <select
                         value={brand}
-                        placeholder="Veloura"
                         onChange={(e) => setBrand(e.target.value)}
                         className={inputClass}
-                      />
+                      >
+                        <option value="">Select Brand</option>
+                        {brands.map((b) => (
+                          <option key={b._id} value={b.name}>
+                            {b.name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
 
                     <div>

@@ -25,6 +25,7 @@ import {
   FaCartPlus,
   FaShieldAlt,
   FaQuestionCircle,
+  FaTags,
 } from "react-icons/fa";
 
 // ✅ Menu items grouped into logical sections
@@ -40,6 +41,7 @@ const menuGroups = [
     items: [
       { to: "/admin/categorylist", icon: <TbCategory2 />, label: "Categories" },
       { to: "/admin/allproductslist", icon: <AiOutlineProduct />, label: "All Products" },
+          { to: "/admin/brands", icon: <FaTags />, label: "All Brands" },
       { to: "/admin/productlist", icon: <AiOutlinePlusSquare />, label: "Create Product" },
     ],
   },

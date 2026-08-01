@@ -32,6 +32,7 @@ import integrationRoutes from "./routes/integrationRoutes.js";
 import supplierRoutes from "./routes/supplierRoutes.js";
 import purchaseRoutes from "./routes/purchaseRoutes.js";
 import questionRoutes from "./routes/questionRoutes.js";
+import brandRoutes from "./routes/brandRoutes.js";
 
 // utils
 import connectDB from "./config/db.js";
@@ -162,6 +163,7 @@ app.use("/api/integrations", integrationRoutes);
 app.use("/api/suppliers", supplierRoutes);
 app.use("/api/purchases", purchaseRoutes);
 app.use("/api/questions", questionRoutes);
+app.use("/api/brands", brandRoutes);
 
 // static files
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));

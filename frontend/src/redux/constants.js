@@ -32,6 +32,7 @@ export const INTEGRATION_URL = "/api/integrations";
 export const SUPPLIER_URL = "/api/suppliers";
 export const PURCHASE_URL = "/api/purchases";
 export const QUESTION_URL = "/api/questions";
+export const BRAND_URL = "/api/brands";
 
 export const ORDER_PAY_URL = (orderId) => `/api/orders/${orderId}/pay`;
 export const SOCKET_URL = isDevelopment ? "http://localhost:8000" : BACKEND_URL;

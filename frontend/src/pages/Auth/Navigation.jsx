@@ -554,13 +554,13 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
           }}
         >
           <div className="max-w-screen-2xl mx-auto px-4">
-            <ul className="flex items-center gap-1">
+            <ul className="flex items-center gap-10">
               {STATIC_NAV_LINKS.map((link) => (
                 <li key={link.to} className="flex items-center">
                   <Link
                     to={link.to}
                     onClick={handleNavClick}
-                    className={`relative px-1 py-2.5 text-[12.50px] font-playfair font-bold uppercase tracking-normal transition-colors duration-200 whitespace-nowrap ${
+                    className={`relative  py-4 text-[12.50px] font-playfair font-bold uppercase tracking-normal transition-colors duration-200 whitespace-nowrap ${
                       isActive(link.to)
                         ? "text-[#D4A843]"
                         : "text-white hover:text-[#D4A843]"
