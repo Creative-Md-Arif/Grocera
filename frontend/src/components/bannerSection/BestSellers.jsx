@@ -75,7 +75,8 @@ const BestSellers = () => {
             Best Sellers
           </h2>
           <p className="text-[12px] md:text-[14px] font-trebuchet font-normal tracking-px text-gray-600 max-w-xl">
-            Our customers' favorite skincare, makeup, and beauty essentials.
+            Our customers&lsquo; favorite groceries, fresh produce, and daily
+            household essentials.
           </p>
           <div className="h-[2px] w-12 bg-[#B88E2F] rounded-full" />
         </div>

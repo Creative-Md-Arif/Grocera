@@ -80,7 +80,8 @@ const NewArrivals = () => {
             New Arrivals
           </h2>
           <p className="text-[12px] md:text-[14px] font-trebuchet font-normal tracking-px text-gray-600 max-w-xl">
-            Discover our latest skincare, makeup, and beauty essentials.
+            Discover the freshest groceries, daily essentials, and new products
+            added to our shelves.
           </p>
           <div className="h-[2px] w-12 bg-[#B88E2F] rounded-full" />
         </div>

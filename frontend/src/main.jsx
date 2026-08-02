@@ -57,10 +57,12 @@ import ManualOrderEntry from "./pages/Admin/ManualOrderEntry";
 import AuthSettingManage from "./pages/Admin/AuthSettingManage";
 import QuestionManager from "./pages/Admin/QuestionManager";
 
+
 const ChatManage = lazy(() => import("./pages/Admin/chat/ChatManage"));
 const BlogListPage = lazy(() => import("./pages/Blog/BlogListPage"));
 const BlogPage = lazy(() => import("./pages/Blog/BlogPage"));
-
+const AllBrandsPage = lazy(() => import("./pages/Brand/AllBrandsPage"));
+const BrandDetailsPage = lazy(() => import("./pages/Brand/BrandDetailsPage"));
 /* ──────────────────────────────────────────────────────────
    ✅ LAZY imports (ভারী এবং কম ভিজিট হওয়া পেজগুলো)
    ────────────────────────────────────────────────────────── */
@@ -283,6 +285,23 @@ const router = createBrowserRouter(
       />
 
       <Route
+        path="/brands"
+        element={
+          <DelayedSuspense>
+            <AllBrandsPage />
+          </DelayedSuspense>
+        }
+      />
+      <Route
+        path="/brand/:idOrSlug"
+        element={
+          <DelayedSuspense>
+            <BrandDetailsPage />
+          </DelayedSuspense>
+        }
+      />
+
+      <Route
         path="/about"
         element={
           <DelayedSuspense>
@@ -438,7 +457,7 @@ const router = createBrowserRouter(
             </DelayedSuspense>
           }
         />
-        
+
         {/* ✅ ব্র্যান্ড রাউট যুক্ত করা হলো */}
         <Route
           path="/admin/brands"

@@ -5,7 +5,11 @@ import FavoritesCount from "../pages/Products/FavoritesCount";
 
 const FavoriteIcon = ({ onClick }) => {
   return (
-    <Link to="/favorite" onClick={onClick} className="relative group block outline-none">
+    <Link 
+      to="/favorite" 
+      onClick={onClick} 
+      className="relative inline-flex items-center justify-center group outline-none"
+    >
       <HiOutlineHeart
         className="text-gray-600 transition-colors duration-300 group-hover:text-[#D4A843]"
         size={20}

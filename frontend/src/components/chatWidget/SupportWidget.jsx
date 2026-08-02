@@ -23,7 +23,7 @@ const SupportWidget = () => {
   const isMainOpen = isExpanded || isChatOpen;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 font-sans">
+    <div className="fixed bottom-20 lg:bottom-16 right-6 z-50 font-sans">
       {/* Chat প্যানেল */}
       <ChatWidget open={isChatOpen} onClose={() => setIsChatOpen(false)} />
 

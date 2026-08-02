@@ -72,9 +72,7 @@ const createBrand = asyncHandler(async (req, res) => {
     }
 
   
-    if (!image) {
-      return res.status(400).json({ error: "Brand image is required" });
-    }
+
 
     // 4. Unique slug
     const slug = await generateUniqueSlug(name);

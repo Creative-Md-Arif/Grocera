@@ -16,7 +16,6 @@ import { useSubscribeNewsletterMutation } from "@redux/api/newsletterApiSlice";
 import Logo from "./Logo";
 import FooterBottom from "./FooterBottom";
 
-
 /* ─── static data (link lists rarely change, kept as-is) ───── */
 const LINKS = {
   support: [
@@ -43,27 +42,6 @@ const SOCIAL_ICONS = {
   twitter: FaTwitter,
   linkedin: FaLinkedin,
 };
-
-const TRUST = [
-  {
-    label: "Secure Payment",
-    bg: "bg-neutral-900",
-    color: "text-[#B88E2F]",
-    path: "M5 13l4 4L19 7",
-  },
-  {
-    label: "24/7 Support",
-    bg: "bg-neutral-900",
-    color: "text-[#B88E2F]",
-    path: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
-  },
-  {
-    label: "Quality Guarantee",
-    bg: "bg-neutral-900",
-    color: "text-[#B88E2F]",
-    path: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z",
-  },
-];
 
 /* ─── Section heading ────────────────────────────────────── */
 const Heading = ({ children }) => (
@@ -130,16 +108,16 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-neutral-950 border-t border-neutral-900 font-figtree text-neutral-400">
-      <div className="max-w-screen-2xl mx-auto px-4 py-12 sm:py-16">
+    <footer className="bg-neutral-950 border-t border-neutral-900 font-figtree text-neutral-400 pb-16 md:pb-0 ">
+      <div className="max-w-screen-2xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 sm:gap-10">
           {/* ── Brand + Newsletter ── */}
           <div className="col-span-1 md:col-span-2 lg:col-span-5 space-y-5">
             <Logo invert />
             <p className="text-[14px] text-neutral-400 leading-relaxed max-w-sm">
-              Your trusted destination for premium quality products. We deliver
-              excellence with every order, ensuring customer satisfaction
-              through innovation and reliability.
+              Your trusted destination for fresh groceries and daily essentials.
+              We deliver quality and convenience right to your doorstep,
+              ensuring satisfaction with every order.
             </p>
 
             {/* Newsletter */}
@@ -273,59 +251,7 @@ const Footer = () => {
             )}
           </div>
         </div>
-
-        {/* ── Bottom bar — trust + payment ── */}
-        <div className="mt-12 pt-6 border-t border-neutral-900">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            {/* Trust badges */}
-            <div className="flex flex-wrap gap-x-6 gap-y-2">
-              {TRUST.map(({ label, bg, color, path }) => (
-                <div key={label} className="flex items-center gap-2">
-                  <div
-                    className={`w-5 h-5 rounded-sm ${bg} border border-neutral-800 flex items-center justify-center shrink-0`}
-                  >
-                    <svg
-                      className={`w-3 h-3 ${color}`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d={path}
-                      />
-                    </svg>
-                  </div>
-                  <span className="text-[14px] font-bold uppercase tracking-[0.15em] text-neutral-400">
-                    {label}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            {/* Payment methods */}
-            <div
-              className="flex items-center gap-2"
-              aria-label="Accepted payment methods"
-            >
-              {["VISA", "MC", "AMEX", "bKash"].map((method) => (
-                <div
-                  key={method}
-                  className="w-12 h-7 bg-neutral-900 border border-neutral-800 rounded-sm flex items-center justify-center"
-                >
-                  <span className="text-[11px] font-black text-neutral-500 tracking-tight">
-                    {method}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
       </div>
-
 
       <FooterBottom copyrightText={copyrightText} />
     </footer>

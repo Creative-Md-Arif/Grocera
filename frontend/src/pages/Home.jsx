@@ -8,6 +8,7 @@ import HeroBanner from "../components/HeroBanner";
 import FeaturedReviews from "../pages/User/FeaturedReviews";
 import CategoryPromoBanner from "../components/promotional/CategoryPromoBanner";
 import FooterWideBanner from "../components/promotional/FooterWideBanner";
+import ShopByBrand from "../components/bannerSection/ShopByBrand";
 
 const Home = () => {
   const [searchParams] = useSearchParams();
@@ -91,6 +92,7 @@ const Home = () => {
         {showHomeSections && <Category />}
         {showHomeSections && <NewArrivals />}
         {showHomeSections && <CategoryPromoBanner />}
+        {showHomeSections && <ShopByBrand />}
         {showHomeSections && <BestSellers />}
         {showHomeSections && <FeaturedReviews />}
         {showHomeSections && <FooterWideBanner />}

@@ -92,12 +92,12 @@ const DesktopSearchForm = memo(function DesktopSearchForm({
           onChange={(e) => setLocalQuery(e.target.value)}
           onFocus={onSearchOpen}
           placeholder="Search in....."
-          className="flex-1 min-w-0 py-2.5 sm:py-3 pl-4 text-[13px] sm:text-sm font-trebuchet text-gray-800 bg-transparent outline-none placeholder:text-gray-400"
+          className="flex-1 min-w-0 py-2.5 sm:py-3 pl-4 text-[13px] font-trebuchet text-gray-800 bg-transparent outline-none placeholder:text-gray-400"
           aria-label="Search products"
         />
         <button
           type="submit"
-          className="flex items-center gap-1.5 px-4 sm:px-5 py-2.5 sm:py-3 text-gray-500 hover:text-[#D4A843] transition-colors duration-200"
+          className="flex items-center gap-1.5 px-4 sm:px-5 py-2.5 sm:py-3 text-gray-500 hover:text-[#D4A843] transition-colors duration-200 shrink-0"
           aria-label="Submit search"
         >
           <IoSearchOutline size={18} />
@@ -313,7 +313,7 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
 
   const handleDesktopSearchSubmit = useCallback(
     (query) => {
-      if (query.trim().length >= 2) {
+      if (query?.trim()?.length >= 2) {
         navigate(`/shop?keyword=${encodeURIComponent(query.trim())}`);
         closeSearch();
       }
@@ -338,10 +338,12 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
         }`}
       >
         <div className="border-b border-gray-200">
-          <div className="relative max-w-screen-2xl mx-auto h-14 sm:h-16 lg:h-20 flex items-center gap-3 lg:gap-6 px-4">
-            <div className="flex md:hidden items-center gap-4">
+          {/* ── Main Header Row ─────────────────────────────────────── */}
+          <div className="relative max-w-screen-2xl mx-auto h-14 sm:h-16 lg:h-20 flex items-center gap-2 sm:gap-3 lg:gap-6 px-3 sm:px-4">
+            {/* Mobile: hamburger + search */}
+            <div className="flex md:hidden items-center gap-2 sm:gap-3 shrink-0">
               <button
-                className="relative flex flex-col items-center justify-center gap-[6px] w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-colors duration-300 hover:bg-gray-100 group"
+                className="relative flex flex-col items-center justify-center gap-[6px] w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-colors duration-300 hover:bg-gray-100 group shrink-0"
                 onClick={toggleMenu}
                 aria-label="Toggle Menu"
                 aria-expanded={isMenuOpen}
@@ -369,10 +371,10 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
 
               <button
                 onClick={openMobileSearch}
-                className="relative group block"
+                className="relative group block shrink-0"
                 aria-label="Open Search"
               >
-                <div className="flex items-center justify-center w-8 h-8 rounded-full transition-colors duration-300 hover:bg-gray-100">
+                <div className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-colors duration-300 hover:bg-gray-100">
                   <IoSearchOutline
                     className="text-[#1A1A1A] group-hover:text-[#D4A843] transition-colors duration-200"
                     size={18}
@@ -381,8 +383,9 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
               </button>
             </div>
 
+            {/* Tablet: hamburger */}
             <button
-              className="hidden md:flex lg:hidden relative flex-col items-center justify-center gap-[6px] w-9 h-9 rounded-full transition-colors duration-300 hover:bg-gray-100 group"
+              className="hidden md:flex lg:hidden relative flex-col items-center justify-center gap-[6px] w-9 h-9 rounded-full transition-colors duration-300 hover:bg-gray-100 group shrink-0"
               onClick={toggleMenu}
               aria-label="Toggle Menu"
               aria-expanded={isMenuOpen}
@@ -408,16 +411,18 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
               ></span>
             </button>
 
+            {/* Logo — centered on mobile, static on tablet & desktop */}
             <Link
               to="/"
               onClick={handleNavClick}
-              className="flex-shrink-0 scale-90 origin-center lg:scale-100
-                 absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2
-                 lg:static lg:left-auto lg:translate-x-0 lg:top-auto lg:translate-y-0"
+              className="flex-shrink-0 scale-75 sm:scale-90 md:scale-100 origin-center
+     absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2
+     md:static md:left-auto md:translate-x-0 md:top-auto md:translate-y-0"
             >
               <Logo />
             </Link>
 
+            {/* Desktop search */}
             <DesktopSearchForm
               onDebouncedQueryChange={handleDebouncedQueryChange}
               onSearchOpen={openDesktopSearch}
@@ -426,7 +431,8 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
               mobileSearchActive={mobileSearchActive}
             />
 
-            <div className="flex items-center gap-4 sm:gap-6 lg:gap-7 ml-auto lg:ml-0">
+            {/* Right actions */}
+            <div className="flex items-center gap-2 sm:gap-4 lg:gap-7 ml-auto lg:ml-0 shrink-0">
               <IconLabelLink
                 to="/track-order"
                 onClick={handleNavClick}
@@ -445,10 +451,11 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
                   >
                     <CiUser size={20} />
                     <span className="text-[10px] font-trebuchet font-semibold uppercase tracking-px max-w-[90px] truncate">
-                      {userInfo.username}
+                      {userInfo?.username ?? "Account"}
                     </span>
                   </button>
 
+                  {/* ── Desktop User Dropdown ── */}
                   <div
                     className={`dropdown-menu absolute top-full right-0 mt-3 w-44 sm:w-52 bg-white border border-gray-200 shadow-lg rounded-lg overflow-hidden transition-all duration-200 ease-in-out ${
                       tabOpen
@@ -457,46 +464,48 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
                     }`}
                   >
                     <div className="p-3 bg-gray-50 border-b border-gray-200">
-                      <span className="block font-poppins text-sm font-medium tracking-px text-[#1A1A1A]">
-                        {userInfo.username}
+                      <span className="block font-trebuchet text-sm font-medium tracking-px text-[#1A1A1A]">
+                        {userInfo?.username ?? ""}
                       </span>
-                      <span className="block font-poppins text-xs font-medium tracking-px text-gray-500 truncate">
-                        {userInfo.email}
+                      <span className="block font-trebuchet text-xs font-medium tracking-px text-gray-500 truncate">
+                        {userInfo?.email ?? ""}
                       </span>
                     </div>
                     <div className="p-1.5">
-                      {userInfo.isAdmin && (
+                      {userInfo?.isAdmin && (
                         <Link
                           to="/admin/dashboard"
                           onClick={handleNavClick}
-                          className="flex items-center gap-2 p-2 rounded-md font-poppins text-sm font-medium tracking-px text-[#1A1A1A] hover:bg-gray-100 hover:text-[#D4A843] transition-colors duration-200"
+                          className="flex items-center gap-2 p-2 rounded-md font-trebuchet text-[13px] font-medium tracking-px text-[#1A1A1A] hover:bg-gray-100 hover:text-[#D4A843] transition-colors duration-200"
                         >
-                          <MdOutlineDashboard size={16} />{" "}
+                          <MdOutlineDashboard size={16} />
                           <span>Dashboard</span>
                         </Link>
                       )}
                       <Link
                         to="/profile"
                         onClick={handleNavClick}
-                        className="flex items-center gap-2 p-2 rounded-md font-poppins text-sm font-medium tracking-px text-[#1A1A1A] hover:bg-gray-100 hover:text-[#D4A843] transition-colors duration-200"
+                        className="flex items-center gap-2 p-2 rounded-md font-trebuchet text-[13px] font-medium tracking-px text-[#1A1A1A] hover:bg-gray-100 hover:text-[#D4A843] transition-colors duration-200"
                       >
-                        <CgProfile size={16} /> <span>Profile</span>
+                        <CgProfile size={16} />
+                        <span>Profile</span>
                       </Link>
                       <Link
                         to="/user-orders"
                         onClick={handleNavClick}
-                        className="flex items-center gap-2 p-2 rounded-md font-poppins text-sm font-medium tracking-px text-[#1A1A1A] hover:bg-gray-100 hover:text-[#D4A843] transition-colors duration-200"
+                        className="flex items-center gap-2 p-2 rounded-md font-trebuchet text-[13px] font-medium tracking-px text-[#1A1A1A] hover:bg-gray-100 hover:text-[#D4A843] transition-colors duration-200"
                       >
-                        <LiaClipboardListSolid size={16} />{" "}
+                        <LiaClipboardListSolid size={16} />
                         <span>My Orders</span>
                       </Link>
                     </div>
                     <div className="p-1.5 border-t border-gray-200">
                       <button
                         onClick={logoutHandler}
-                        className="flex items-center gap-2 w-full p-2 rounded-md font-poppins text-sm font-medium tracking-px text-red-500 hover:bg-red-50 transition-colors duration-200"
+                        className="flex items-center gap-2 w-full p-2 rounded-md font-trebuchet text-[13px] font-medium tracking-px text-red-500 hover:bg-red-50 transition-colors duration-200"
                       >
-                        <IoIosLogOut size={16} /> <span>Logout</span>
+                        <IoIosLogOut size={16} />
+                        <span>Logout</span>
                       </button>
                     </div>
                   </div>
@@ -532,10 +541,10 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
               <Link
                 to={userInfo ? "/profile" : "/login"}
                 onClick={handleNavClick}
-                className="lg:hidden relative group block"
+                className="lg:hidden relative group block shrink-0"
                 aria-label="User Profile"
               >
-                <div className="flex items-center justify-center w-8 h-8 rounded-full transition-colors duration-300 group-hover:bg-gray-100">
+                <div className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-colors duration-300 group-hover:bg-gray-100">
                   <CiUser
                     className="text-[#1A1A1A] group-hover:text-[#D4A843] transition-colors duration-200"
                     size={18}
@@ -546,6 +555,7 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
           </div>
         </div>
 
+        {/* ── Desktop Category Bar ────────────────────────────────── */}
         <div
           className="hidden lg:block bg-[#141414] relative z-40"
           onMouseLeave={() => {
@@ -554,13 +564,13 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
           }}
         >
           <div className="max-w-screen-2xl mx-auto px-4">
-            <ul className="flex items-center gap-10">
+            <ul className="flex items-center gap-8 xl:gap-10">
               {STATIC_NAV_LINKS.map((link) => (
                 <li key={link.to} className="flex items-center">
                   <Link
                     to={link.to}
                     onClick={handleNavClick}
-                    className={`relative  py-4 text-[12.50px] font-playfair font-bold uppercase tracking-normal transition-colors duration-200 whitespace-nowrap ${
+                    className={`relative py-4 text-[13px] font-trebuchet font-bold uppercase tracking-px transition-colors duration-200 whitespace-nowrap ${
                       isActive(link.to)
                         ? "text-[#D4A843]"
                         : "text-white hover:text-[#D4A843]"
@@ -598,7 +608,7 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
                     <Link
                       to={`/shop?category=${cat._id}`}
                       onClick={handleNavClick}
-                      className={`relative px-1 py-2.5 text-[12.50px] font-playfair font-bold uppercase tracking transition-colors duration-200 flex items-center gap-0.5 whitespace-nowrap ${
+                      className={`relative px-1 py-2.5 text-[13px] font-trebuchet font-bold uppercase tracking-px transition-colors duration-200 flex items-center gap-0.5 whitespace-nowrap ${
                         isActive(`/shop?category=${cat._id}`)
                           ? "text-[#D4A843]"
                           : "text-white hover:text-[#D4A843]"
@@ -623,129 +633,130 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
             </ul>
           </div>
 
-          {hoveredCatId && categories && (
-            <div
-              className={`absolute inset-x-0 mx-auto max-w-screen-2xl bg-white border border-gray-200 shadow-lg rounded-b-md z-50 transition-all duration-200 ease-in-out ${
-                hoveredCatId ? "opacity-100 visible" : "opacity-0 invisible"
-              }`}
-              style={{ top: '100%' }}
-              onMouseEnter={() => setHoveredCatId(hoveredCatId)}
-              onMouseLeave={() => {
-                setHoveredCatId(null);
-                setHoveredSubCatId(null);
-              }}
-            >
-              <div className="flex">
-                {(() => {
-                  const activeCategory = categories.find(
-                    (cat) => cat._id === hoveredCatId,
-                  );
-                  if (!activeCategory || !activeCategory.children?.length)
-                    return null;
+          {/* ── Desktop Mega Menu ── */}
+          {hoveredCatId &&
+            categories &&
+            (() => {
+              const activeCategory = categories.find(
+                (cat) => cat._id === hoveredCatId,
+              );
 
-                  const subCatCount = activeCategory.children.length;
-                  const SPLIT_THRESHOLD = 8;
-                  const shouldSplitColumns = subCatCount > SPLIT_THRESHOLD;
-                  const half = shouldSplitColumns
-                    ? Math.ceil(subCatCount / 2)
-                    : subCatCount;
-                  const firstColItems = activeCategory.children.slice(0, half);
-                  const secondColItems = shouldSplitColumns
-                    ? activeCategory.children.slice(half)
-                    : [];
+              // যদি ক্যাটাগরি না থাকে বা সাব-ক্যাটাগরি না থাকে, তবে কিছুই রেন্ডার হবে না
+              if (!activeCategory || !activeCategory.children?.length)
+                return null;
 
-                  const activeSubCategory = activeCategory.children.find(
-                    (subCat) => subCat._id === hoveredSubCatId,
-                  );
+              const subCatCount = activeCategory.children.length;
+              const SPLIT_THRESHOLD = 8;
+              const shouldSplitColumns = subCatCount > SPLIT_THRESHOLD;
+              const half = shouldSplitColumns
+                ? Math.ceil(subCatCount / 2)
+                : subCatCount;
+              const firstColItems = activeCategory.children.slice(0, half);
+              const secondColItems = shouldSplitColumns
+                ? activeCategory.children.slice(half)
+                : [];
 
-                  return (
-                    <>
-                      {firstColItems.length > 0 && (
-                        <ul className="w-56 py-2 border-r border-gray-100">
-                          {firstColItems.map((subCat) => (
-                            <li
-                              key={subCat._id}
-                              onMouseEnter={() =>
-                                setHoveredSubCatId(subCat._id)
-                              }
+              const activeSubCategory = activeCategory.children.find(
+                (subCat) => subCat._id === hoveredSubCatId,
+              );
+
+              return (
+                <div
+                  className={`absolute inset-x-0 mx-auto max-w-screen-2xl bg-white border border-gray-200 shadow-lg rounded-b-md z-50 transition-all duration-200 ease-in-out ${
+                    hoveredCatId ? "opacity-100 visible" : "opacity-0 invisible"
+                  }`}
+                  style={{ top: "100%" }}
+                  onMouseEnter={() => setHoveredCatId(hoveredCatId)}
+                  onMouseLeave={() => {
+                    setHoveredCatId(null);
+                    setHoveredSubCatId(null);
+                  }}
+                >
+                  <div className="flex">
+                    {firstColItems.length > 0 && (
+                      <ul className="w-56 py-2 border-r border-gray-100">
+                        {firstColItems.map((subCat) => (
+                          <li
+                            key={subCat._id}
+                            onMouseEnter={() => setHoveredSubCatId(subCat._id)}
+                          >
+                            <Link
+                              to={`/shop?category=${subCat._id}`}
+                              onClick={handleNavClick}
+                              className={`flex items-center justify-between gap-2 px-4 py-2 text-[13px] font-trebuchet font-medium tracking-px transition-colors duration-200 ${
+                                hoveredSubCatId === subCat._id
+                                  ? "bg-[#D4A843] text-white"
+                                  : "text-gray-700 hover:bg-gray-50"
+                              }`}
                             >
-                              <Link
-                                to={`/shop?category=${subCat._id}`}
-                                onClick={handleNavClick}
-                                className={`flex items-center justify-between gap-2 px-4 py-2 text-[13px] font-trebuchet tracking-px transition-colors duration-200 ${
-                                  hoveredSubCatId === subCat._id
-                                    ? "bg-[#D4A843] text-white font-semibold"
-                                    : "text-gray-700 hover:bg-gray-50"
-                                }`}
-                              >
-                                <span className="truncate">
-                                  {subCat.name}
-                                </span>
-                                {subCat.children?.length > 0 && (
-                                  <IoChevronForward size={12} />
-                                )}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
+                              <span className="truncate">{subCat.name}</span>
+                              {subCat.children?.length > 0 && (
+                                <IoChevronForward
+                                  size={12}
+                                  className="shrink-0"
+                                />
+                              )}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
 
-                      {secondColItems.length > 0 && (
-                        <ul className="w-56 py-2 border-r border-gray-100">
-                          {secondColItems.map((subCat) => (
-                            <li
-                              key={subCat._id}
-                              onMouseEnter={() =>
-                                setHoveredSubCatId(subCat._id)
-                              }
+                    {secondColItems.length > 0 && (
+                      <ul className="w-56 py-2 border-r border-gray-100">
+                        {secondColItems.map((subCat) => (
+                          <li
+                            key={subCat._id}
+                            onMouseEnter={() => setHoveredSubCatId(subCat._id)}
+                          >
+                            <Link
+                              to={`/shop?category=${subCat._id}`}
+                              onClick={handleNavClick}
+                              className={`flex items-center justify-between gap-2 px-4 py-2 text-[13px] font-trebuchet font-medium tracking-px transition-colors duration-200 ${
+                                hoveredSubCatId === subCat._id
+                                  ? "bg-[#D4A843] text-white"
+                                  : "text-gray-700 hover:bg-gray-50"
+                              }`}
                             >
-                              <Link
-                                to={`/shop?category=${subCat._id}`}
-                                onClick={handleNavClick}
-                                className={`flex items-center justify-between gap-2 px-4 py-2 text-[13px] font-trebuchet tracking-px transition-colors duration-200 ${
-                                  hoveredSubCatId === subCat._id
-                                    ? "bg-[#D4A843] text-white font-semibold"
-                                    : "text-gray-700 hover:bg-gray-50"
-                                }`}
-                              >
-                                <span className="truncate">
-                                  {subCat.name}
-                                </span>
-                                {subCat.children?.length > 0 && (
-                                  <IoChevronForward size={12} />
-                                )}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
+                              <span className="truncate">{subCat.name}</span>
+                              {subCat.children?.length > 0 && (
+                                <IoChevronForward
+                                  size={12}
+                                  className="shrink-0"
+                                />
+                              )}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
 
-                      {activeSubCategory?.children?.length > 0 && (
-                        <ul className="w-56 py-2 max-h-[70vh] overflow-y-auto">
-                          {activeSubCategory.children.map((subSubCat) => (
-                            <li key={subSubCat._id}>
-                              <Link
-                                to={`/shop?category=${subSubCat._id}`}
-                                onClick={handleNavClick}
-                                className="block px-4 py-2 text-[13px] font-trebuchet tracking-px text-gray-700 hover:bg-gray-50 hover:text-[#D4A843] transition-colors duration-200 truncate"
-                              >
-                                {subSubCat.name}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </>
-                  );
-                })()}
-              </div>
-            </div>
-          )}
+                    {activeSubCategory?.children?.length > 0 && (
+                      <ul className="w-56 py-2 max-h-[70vh] overflow-y-auto">
+                        {activeSubCategory.children.map((subSubCat) => (
+                          <li key={subSubCat._id}>
+                            <Link
+                              to={`/shop?category=${subSubCat._id}`}
+                              onClick={handleNavClick}
+                              className="block px-4 py-2 text-[13px] font-trebuchet font-normal tracking-px text-gray-700 hover:bg-gray-50 hover:text-[#D4A843] transition-colors duration-200 truncate"
+                            >
+                              {subSubCat.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+              );
+            })()}
         </div>
       </header>
 
+      {/* Spacer */}
       <div className="h-14 sm:h-16 lg:h-[120px]"></div>
 
+      {/* ── Search Overlay ────────────────────────────────────────── */}
       <SearchOverlay
         open={isSearchOpen}
         onClose={closeSearch}
@@ -754,6 +765,7 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
         inputRef={mobileSearchInputRef}
       />
 
+      {/* ── Mobile Sidebar Backdrop ──────────────────────────────── */}
       <div
         className={`fixed inset-0 z-[1100] bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
           isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
@@ -762,18 +774,21 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
         aria-hidden="true"
       />
 
+      {/* ── Mobile Sidebar ───────────────────────────────────────── */}
       <aside
         className={`fixed top-0 left-0 bottom-0 z-[1200] w-[85vw] sm:w-[320px] max-w-full bg-white border-r border-gray-200 transition-transform duration-300 ease-in-out flex flex-col overflow-y-auto font-trebuchet ${
           isMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         ref={sidebarRef}
       >
-        <div className="p-4 border-b border-gray-200 bg-gray-50">
+        {/* Sidebar Header */}
+        <div className="p-4 border-b border-gray-200 bg-gray-50 shrink-0">
           <Link to="/" onClick={handleNavClick} aria-label="Home">
             <Logo />
           </Link>
         </div>
 
+        {/* Sidebar Nav */}
         <nav className="flex-1 p-2 overflow-y-auto custom-scrollbar">
           <ul>
             {MOBILE_MENU_SECTIONS.map((item) => (
@@ -781,7 +796,7 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
                 <Link
                   to={item.to}
                   onClick={handleNavClick}
-                  className={`flex items-center gap-3 p-2 rounded-lg text-[14px] font-normal font-trebuchet tracking-px uppercase transition-colors duration-200 min-h-[40px] sm:min-h-[44px] ${
+                  className={`flex items-center gap-3 p-2 rounded-lg text-[14px] font-trebuchet font-semibold tracking-px uppercase transition-colors duration-200 min-h-[44px] ${
                     isActive(item.to)
                       ? "bg-gray-100 text-[#D4A843] border-l-2 border-[#D4A843]"
                       : "text-gray-600 hover:bg-gray-50 hover:text-[#1A1A1A]"
@@ -794,7 +809,7 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
             ))}
 
             <li className="mt-4 border-t border-gray-100 pt-4">
-              <p className="px-3 text-[12px] font-bold font-trebuchet uppercase text-gray-500 mb-2">
+              <p className="px-3 text-[12px] font-trebuchet font-bold uppercase tracking-px text-gray-500 mb-2">
                 Categories
               </p>
             </li>
@@ -814,7 +829,7 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
               categories?.map((cat) => (
                 <li key={cat._id}>
                   <div
-                    className={`flex items-center justify-between p-2.5 sm:p-3 rounded-lg font-trebuchet text-[14px] font-semibold tracking-px uppercase transition-colors duration-200 min-h-[40px] sm:min-h-[44px] cursor-pointer ${
+                    className={`flex items-center justify-between p-2.5 rounded-lg font-trebuchet text-[14px] font-semibold tracking-px uppercase transition-colors duration-200 min-h-[44px] cursor-pointer ${
                       mobileOpenCatId === cat._id
                         ? "bg-gray-100 text-[#D4A843]"
                         : "text-gray-700 hover:bg-gray-50 hover:text-[#1A1A1A]"
@@ -825,11 +840,11 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
                       )
                     }
                   >
-                    <span>{cat.name}</span>
+                    <span className="truncate">{cat.name}</span>
                     {cat.children?.length > 0 && (
                       <IoChevronDownOutline
                         size={14}
-                        className={`transition-transform duration-200 ${
+                        className={`transition-transform duration-200 shrink-0 ${
                           mobileOpenCatId === cat._id ? "rotate-180" : ""
                         }`}
                       />
@@ -851,7 +866,7 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
                               <Link
                                 to={`/shop?category=${subCat._id}`}
                                 onClick={handleNavClick}
-                                className="block p-2 sm:p-2.5 rounded-md text-[14px] font-trebuchet font-medium tracking-px text-gray-700 hover:bg-gray-50 hover:text-[#D4A843] min-h-[36px] sm:min-h-[40px] transition-colors duration-200"
+                                className="block p-2 rounded-md text-[14px] font-trebuchet font-medium tracking-px text-gray-700 hover:bg-gray-50 hover:text-[#D4A843] min-h-[40px] transition-colors duration-200 truncate"
                               >
                                 {subCat.name}
                               </Link>
@@ -861,7 +876,7 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
                                 <Link
                                   to={`/shop?category=${subSubCat._id}`}
                                   onClick={handleNavClick}
-                                  className="block pl-4 p-2 rounded-md text-[14px] font-normal font-trebuchet tracking-px text-gray-500 hover:bg-gray-50 hover:text-[#D4A843] min-h-[32px] sm:min-h-[36px] transition-colors duration-200"
+                                  className="block pl-4 p-2 rounded-md text-[14px] font-trebuchet font-normal tracking-px text-gray-500 hover:bg-gray-50 hover:text-[#D4A843] min-h-[36px] transition-colors duration-200 truncate"
                                 >
                                   {subSubCat.name}
                                 </Link>
@@ -878,11 +893,12 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
           </ul>
         </nav>
 
-        <div className="p-3 border-t border-gray-200 font-trebuchet bg-gray-50">
+        {/* Sidebar Footer — User Section */}
+        <div className="p-3 border-t border-gray-200 font-trebuchet bg-gray-50 shrink-0">
           {userInfo ? (
             <div>
               <button
-                className="flex items-center gap-2 sm:gap-3 w-full p-2 sm:p-3 bg-white border border-gray-200 rounded-lg min-h-[40px] sm:min-h-[44px] text-[#1A1A1A] hover:bg-gray-100 transition-colors duration-200 z-50"
+                className="flex items-center gap-2 sm:gap-3 w-full p-2 sm:p-3 bg-white border border-gray-200 rounded-lg min-h-[44px] text-[#1A1A1A] hover:bg-gray-100 transition-colors duration-200"
                 onClick={toggleTab}
                 aria-expanded={tabOpen}
               >
@@ -891,11 +907,11 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
                 </span>
 
                 <span className="flex-1 text-left text-[14px] font-semibold text-gray-700 tracking-px truncate">
-                  {userInfo.username}
+                  {userInfo?.username ?? "Account"}
                 </span>
                 <IoChevronDownOutline
                   size={14}
-                  className={`text-gray-400 transition-transform duration-200 ${
+                  className={`text-gray-400 transition-transform duration-200 shrink-0 ${
                     tabOpen ? "rotate-180" : ""
                   }`}
                 />
@@ -907,14 +923,15 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
                 }`}
               >
                 <ul className="pl-4 space-y-1">
-                  {userInfo.isAdmin && (
+                  {userInfo?.isAdmin && (
                     <li>
                       <Link
                         to="/admin/dashboard"
                         onClick={handleNavClick}
-                        className="flex items-center gap-2 p-2 sm:p-2.5 rounded-md text-[14px] font-medium text-gray-700 tracking-px hover:bg-gray-50 hover:text-[#D4A843] min-h-[36px] sm:min-h-[40px] transition-colors duration-200"
+                        className="flex items-center gap-2 p-2 rounded-md text-[14px] font-trebuchet font-medium tracking-px text-gray-700 hover:bg-gray-50 hover:text-[#D4A843] min-h-[40px] transition-colors duration-200"
                       >
-                        <MdOutlineDashboard size={16} /> <span>Dashboard</span>
+                        <MdOutlineDashboard size={16} />
+                        <span>Dashboard</span>
                       </Link>
                     </li>
                   )}
@@ -922,36 +939,39 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
                     <Link
                       to="/profile"
                       onClick={handleNavClick}
-                      className="flex items-center gap-2 p-2 sm:p-2.5 rounded-md text-[14px] font-medium text-gray-700 tracking-px hover:bg-gray-50 hover:text-[#D4A843] min-h-[36px] sm:min-h-[40px] transition-colors duration-200"
+                      className="flex items-center gap-2 p-2 rounded-md text-[14px] font-trebuchet font-medium tracking-px text-gray-700 hover:bg-gray-50 hover:text-[#D4A843] min-h-[40px] transition-colors duration-200"
                     >
-                      <CgProfile size={16} /> <span>Profile</span>
+                      <CgProfile size={16} />
+                      <span>Profile</span>
                     </Link>
                   </li>
                   <li>
                     <Link
                       to="/user-orders"
                       onClick={handleNavClick}
-                      className="flex items-center gap-2 p-2 sm:p-2.5 rounded-md text-[14px] font-medium text-gray-700 tracking-px hover:bg-gray-50 hover:text-[#D4A843] min-h-[36px] sm:min-h-[40px] transition-colors duration-200"
+                      className="flex items-center gap-2 p-2 rounded-md text-[14px] font-trebuchet font-medium tracking-px text-gray-700 hover:bg-gray-50 hover:text-[#D4A843] min-h-[40px] transition-colors duration-200"
                     >
-                      <LiaClipboardListSolid size={16} /> <span>My Orders</span>
+                      <LiaClipboardListSolid size={16} />
+                      <span>My Orders</span>
                     </Link>
                   </li>
                   <li>
                     <Link
                       to="/track-order"
                       onClick={handleNavClick}
-                      className="flex items-center gap-2 p-2 sm:p-2.5 rounded-md text-[14px] font-medium text-gray-700 tracking-px hover:bg-gray-50 hover:text-[#D4A843] min-h-[36px] sm:min-h-[40px] transition-colors duration-200"
+                      className="flex items-center gap-2 p-2 rounded-md text-[14px] font-trebuchet font-medium tracking-px text-gray-700 hover:bg-gray-50 hover:text-[#D4A843] min-h-[40px] transition-colors duration-200"
                     >
-                      <LiaShippingFastSolid size={16} />{" "}
+                      <LiaShippingFastSolid size={16} />
                       <span>Track Order</span>
                     </Link>
                   </li>
                   <li>
                     <button
                       onClick={logoutHandler}
-                      className="flex items-center gap-2 w-full p-2 sm:p-2.5 rounded-md text-[14px] font-medium text-red-500 tracking-px hover:bg-red-50 min-h-[36px] sm:min-h-[40px] transition-colors duration-200"
+                      className="flex items-center gap-2 w-full p-2 rounded-md text-[14px] font-trebuchet font-medium tracking-px text-red-500 hover:bg-red-50 min-h-[40px] transition-colors duration-200"
                     >
-                      <IoIosLogOut size={16} /> <span>Logout</span>
+                      <IoIosLogOut size={16} />
+                      <span>Logout</span>
                     </button>
                   </li>
                 </ul>
@@ -962,21 +982,22 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
               <Link
                 to="/track-order"
                 onClick={handleNavClick}
-                className="flex items-center justify-center gap-2 text-center p-2.5 sm:p-3 text-gray-600 border border-gray-200 rounded-lg text-[14px] font-semibold uppercase tracking-px hover:bg-gray-100 hover:text-[#1A1A1A] transition-all duration-200"
+                className="flex items-center justify-center gap-2 text-center p-2.5 text-gray-600 border border-gray-200 rounded-lg text-[14px] font-trebuchet font-semibold uppercase tracking-px hover:bg-gray-100 hover:text-[#1A1A1A] transition-all duration-200 min-h-[44px]"
               >
-                <LiaShippingFastSolid size={18} /> Track Order
+                <LiaShippingFastSolid size={18} />
+                Track Order
               </Link>
               <Link
                 to="/login"
                 onClick={handleNavClick}
-                className="block text-center p-2.5 sm:p-3 border border-[#D4A843] text-[#D4A843] rounded-lg text-[14px] font-semibold uppercase tracking-px hover:bg-[#D4A843] hover:text-white transition-all duration-200"
+                className="block text-center p-2.5 border border-[#D4A843] text-[#D4A843] rounded-lg text-[14px] font-trebuchet font-semibold uppercase tracking-px hover:bg-[#D4A843] hover:text-white transition-all duration-200 min-h-[44px]"
               >
                 Login
               </Link>
               <Link
                 to="/register"
                 onClick={handleNavClick}
-                className="block text-center p-2.5 sm:p-3 bg-gradient-to-r from-[#B88E2F] to-[#D4A843] text-white rounded-lg text-[14px] font-semibold uppercase tracking-px hover:opacity-90 transition-all duration-200 shadow-md shadow-black/10"
+                className="block text-center p-2.5 bg-gradient-to-r from-[#B88E2F] to-[#D4A843] text-white rounded-lg text-[14px] font-trebuchet font-semibold uppercase tracking-px hover:opacity-90 transition-all duration-200 min-h-[44px]"
               >
                 Register
               </Link>
@@ -985,6 +1006,7 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
         </div>
       </aside>
 
+      {/* ── Bottom Drawer (Mobile only) ─────────────────────────── */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-[1000] bg-[#D4A843] font-trebuchet shadow-lg border-t border-gold-300">
         <div className="grid grid-cols-5">
           <Link

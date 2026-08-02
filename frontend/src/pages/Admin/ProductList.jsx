@@ -7,7 +7,10 @@ import {
   useUploadProductImageMutation,
 } from "@redux/api/productApiSlice";
 import { useFetchCategoriesQuery } from "@redux/api/categoryApiSlice";
-import { useGetBrandsQuery } from "@redux/api/brandApiSlice";
+import {
+  useGetBrandsQuery,
+  useCreateBrandMutation,
+} from "@redux/api/brandApiSlice";
 import { toast } from "react-toastify";
 import AdminMenu from "./AdminMenu";
 import {
@@ -109,6 +112,8 @@ const ProductList = () => {
   const [hasVariants, setHasVariants] = useState(false);
   const [variants, setVariants] = useState([]);
   const [activeVariantTab, setActiveVariantTab] = useState("basic");
+  const [showBrandModal, setShowBrandModal] = useState(false);
+  const [newBrandName, setNewBrandName] = useState("");
 
   const navigate = useNavigate();
   const [uploadProductImage] = useUploadProductImageMutation();
@@ -118,6 +123,8 @@ const ProductList = () => {
 
   const { data: brandsData } = useGetBrandsQuery({ isActive: "true" });
   const brands = brandsData?.brands || [];
+  const [createBrand, { isLoading: isCreatingBrand }] =
+    useCreateBrandMutation();
 
   // --- Handlers wrapped in useCallback for performance ---
   const handlePriceChange = useCallback(
@@ -135,6 +142,31 @@ const ProductList = () => {
     },
     [price],
   );
+
+
+
+  
+  const handleCreateBrand = async () => {
+    if (!newBrandName.trim()) {
+      toast.error("Brand name is required");
+      return;
+    }
+    try {
+      const formData = new FormData();
+      formData.append("name", newBrandName);
+      formData.append("isActive", "true"); // ✅ এটি যুক্ত করুন
+      
+      const res = await createBrand(formData).unwrap();
+      toast.success("Brand added successfully!");
+      
+      setBrand(res.name);
+      
+      setNewBrandName("");
+      setShowBrandModal(false);
+    } catch (err) {
+      toast.error(err?.data?.error || "Failed to create brand");
+    }
+  };
 
   const handleDiscountPercentageChange = useCallback((val) => {
     const perc = Number(val);
@@ -678,18 +710,28 @@ const ProductList = () => {
 
                     <div>
                       <label className={labelClass}>Brand</label>
-                      <select
-                        value={brand}
-                        onChange={(e) => setBrand(e.target.value)}
-                        className={inputClass}
-                      >
-                        <option value="">Select Brand</option>
-                        {brands.map((b) => (
-                          <option key={b._id} value={b.name}>
-                            {b.name}
-                          </option>
-                        ))}
-                      </select>
+                      <div className="flex gap-2">
+                        <select
+                          value={brand}
+                          onChange={(e) => setBrand(e.target.value)}
+                          className={inputClass}
+                        >
+                          <option value="">Select Brand</option>
+                          {brands.map((b) => (
+                            <option key={b._id} value={b.name}>
+                              {b.name}
+                            </option>
+                          ))}
+                        </select>
+                        <button
+                          type="button"
+                          onClick={() => setShowBrandModal(true)}
+                          className="bg-gray-100 hover:bg-black hover:text-white text-black px-4 rounded-sm border border-gray-200 transition-colors flex items-center justify-center whitespace-nowrap text-sm font-bold uppercase"
+                          title="Add New Brand"
+                        >
+                          <FaPlus size={12} />
+                        </button>
+                      </div>
                     </div>
 
                     <div>
@@ -1204,7 +1246,45 @@ const ProductList = () => {
               </div>
             </section>
           )}
+        </div>      {/* Quick Brand Create Modal */}
+      {showBrandModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-6 max-w-sm w-full rounded-sm border-t-4 border-black">
+            <h2 className="text-lg font-['Playfair_Display'] font-bold mb-4 uppercase tracking-wider">
+              Quick Add Brand
+            </h2>
+            <input
+              type="text"
+              value={newBrandName}
+              onChange={(e) => setNewBrandName(e.target.value)}
+              placeholder="Enter brand name..."
+              className={inputClass}
+              autoFocus
+            />
+            <div className="flex justify-end gap-2 mt-4">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowBrandModal(false);
+                  setNewBrandName("");
+                }}
+                className="px-4 py-2 bg-gray-100 text-gray-700 font-bold uppercase tracking-widest text-xs hover:bg-gray-200 rounded-sm"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleCreateBrand}
+                disabled={isCreatingBrand}
+                className="px-4 py-2 bg-black text-white font-bold uppercase tracking-widest text-xs hover:bg-red-600 rounded-sm disabled:opacity-50"
+              >
+                {isCreatingBrand ? "Saving..." : "Save Brand"}
+              </button>
+            </div>
+          </div>
         </div>
+      )}
+  
       </main>
     </div>
   );

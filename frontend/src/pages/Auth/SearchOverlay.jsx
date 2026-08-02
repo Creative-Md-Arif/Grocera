@@ -36,8 +36,7 @@ function highlightMatch(text, term) {
 // ─── 3. Memoized Component: SearchResultItem ────────────────────────────────
 const SearchResultItem = memo(function SearchResultItem({ product, query, onClick }) {
   const to = `/product/${product.slug || product._id}`;
-  
-  // Memoize expensive highlight calculation
+
   const highlightedName = useMemo(
     () => highlightMatch(product.name, query),
     [product.name, query]
@@ -48,12 +47,12 @@ const SearchResultItem = memo(function SearchResultItem({ product, query, onClic
       <Link
         to={to}
         onClick={onClick}
-        className="group flex items-center gap-4 py-3 hover:bg-gray-50 transition-colors -mx-2 px-2 rounded-md"
+        className="group flex items-center gap-3 sm:gap-4 py-3 hover:bg-gray-50 transition-colors -mx-2 px-2 rounded-md"
       >
-        <div className="w-12 h-12 rounded-md overflow-hidden bg-gray-100 border border-gray-100 shrink-0">
+        <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-md overflow-hidden bg-gray-100 border border-gray-100 shrink-0">
           <img
-            src={product.images?.[0]}
-            alt={product.name}
+            src={product.images?.[0] ?? ""}
+            alt={product.name ?? ""}
             className="w-full h-full object-cover"
             loading="lazy"
           />
@@ -64,7 +63,7 @@ const SearchResultItem = memo(function SearchResultItem({ product, query, onClic
               {product.brand}
             </p>
           )}
-          <p className="text-[13px] sm:text-sm font-trebuchet font-medium text-gray-800 truncate">
+          <p className="text-[13px] font-trebuchet font-medium text-gray-800 truncate">
             {highlightedName}
           </p>
           {product.category?.name && (
@@ -73,12 +72,12 @@ const SearchResultItem = memo(function SearchResultItem({ product, query, onClic
             </p>
           )}
         </div>
-        <div className="flex items-center gap-3 shrink-0">
-          <span className="text-[13px] sm:text-sm font-trebuchet font-bold text-gray-900">
-            ৳{product.price?.toLocaleString()}
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <span className="text-[13px] font-trebuchet font-bold text-gray-900 whitespace-nowrap">
+            ৳{product.price?.toLocaleString() ?? 0}
           </span>
           <IoArrowForward
-            className="text-gray-300 group-hover:text-[#D4A843] group-hover:translate-x-0.5 transition-all"
+            className="text-gray-300 group-hover:text-[#D4A843] group-hover:translate-x-0.5 transition-all shrink-0"
             size={16}
           />
         </div>
@@ -107,25 +106,22 @@ SearchResultItem.propTypes = {
 export default function SearchOverlay({
   open,
   onClose,
-  externalQuery = "", // Default empty string to prevent undefined errors
+  externalQuery = "",
   showInput = false,
   inputRef,
 }) {
   const navigate = useNavigate();
-  
-  // Local state for Mobile embedded input (isolated from Navigation re-renders)
+
   const [localQuery, setLocalQuery] = useState("");
   const debouncedLocalQuery = useDebounce(localQuery, 400);
-  
-  // Desktop uses externalQuery (already debounced in Navigation), Mobile uses local
+
   const activeQuery = (showInput ? debouncedLocalQuery : externalQuery) || "";
-  
+
   const { data, isFetching, isLoading } = useGetProductsQuery(
     { keyword: activeQuery, page: 1 },
     { skip: activeQuery.length < 2 }
   );
 
-  // Safely handle both array or object response from API
   const apiProducts = Array.isArray(data) ? data : data?.products;
   const results = (apiProducts ?? []).slice(0, 10);
   const hasQuery = activeQuery.length >= 2;
@@ -138,31 +134,30 @@ export default function SearchOverlay({
   const handleSubmit = (e) => {
     e.preventDefault();
     const queryToSubmit = showInput ? localQuery : externalQuery;
-    if (queryToSubmit.trim().length >= 2) {
+    if (queryToSubmit?.trim()?.length >= 2) {
       navigate(`/shop?keyword=${encodeURIComponent(queryToSubmit.trim())}`);
       onClose();
     }
   };
 
-  // Clear mobile input when overlay closes
   useEffect(() => {
     if (!open) setLocalQuery("");
   }, [open]);
 
   return (
     <div
-      className={`search-dropdown fixed left-0 right-0 z-[1000] top-14 sm:top-16 lg:top-[124px] transition-all duration-200 ease-out ${
+      className={`search-dropdown fixed left-0 right-0 z-[1000] top-14 sm:top-16 lg:top-[124px] transition-all duration-200 ease-out overflow-hidden ${
         open
           ? "opacity-100 visible translate-y-0"
           : "opacity-0 invisible -translate-y-2"
       }`}
     >
-      <div className="w-full bg-white shadow-xl border-t border-gray-200 max-h-[75vh] flex flex-col">
+      <div className="w-full bg-white shadow-xl border-t border-gray-200 max-h-[60vh] sm:max-h-[70vh] lg:max-h-[75vh] flex flex-col">
         {/* Embedded input — mobile only */}
         {showInput && (
           <form
             onSubmit={handleSubmit}
-            className="flex items-center gap-3 px-4 py-3 border-b border-gray-200 bg-gray-50"
+            className="flex items-center gap-3 px-4 py-3 border-b border-gray-200 bg-gray-50 shrink-0"
           >
             <IoSearchOutline className="text-gray-400 shrink-0" size={18} />
             <input
@@ -171,13 +166,13 @@ export default function SearchOverlay({
               value={localQuery}
               onChange={(e) => setLocalQuery(e.target.value)}
               placeholder="Search here....."
-              className="flex-1 text-sm font-trebuchet text-gray-800 bg-transparent outline-none placeholder:text-gray-400"
+              className="flex-1 min-w-0 text-sm font-trebuchet text-gray-800 bg-transparent outline-none placeholder:text-gray-400"
             />
             {localQuery.length > 0 && (
               <button
                 type="button"
                 onClick={() => setLocalQuery("")}
-                className="text-gray-400 hover:text-gray-700 transition-colors"
+                className="text-gray-400 hover:text-gray-700 transition-colors shrink-0"
                 aria-label="Clear search"
               >
                 <IoCloseOutline size={18} />
@@ -187,7 +182,7 @@ export default function SearchOverlay({
               type="button"
               onClick={onClose}
               aria-label="Close search"
-              className="text-gray-400 hover:text-gray-700 transition-colors"
+              className="text-gray-400 hover:text-gray-700 transition-colors shrink-0"
             >
               <IoCloseOutline size={20} />
             </button>
@@ -196,26 +191,26 @@ export default function SearchOverlay({
 
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-screen-2xl mx-auto px-4">
-            {/* Loading skeleton - Show on initial load OR while fetching new keystrokes with no prior results */}
+            {/* Loading skeleton */}
             {(isLoading || (isFetching && results.length === 0)) && hasQuery && (
               <div className="py-2">
                 {[1, 2, 3].map((i) => (
                   <div
                     key={i}
-                    className="flex items-center gap-4 py-3 border-b border-gray-100 animate-pulse"
+                    className="flex items-center gap-3 sm:gap-4 py-3 border-b border-gray-100 animate-pulse"
                   >
-                    <div className="w-12 h-12 rounded-md bg-gray-100 shrink-0" />
+                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-md bg-gray-100 shrink-0" />
                     <div className="flex-1 space-y-2">
                       <div className="h-2.5 w-16 bg-gray-100 rounded" />
                       <div className="h-3 w-2/3 bg-gray-100 rounded" />
                     </div>
-                    <div className="h-3 w-12 bg-gray-100 rounded" />
+                    <div className="h-3 w-12 bg-gray-100 rounded shrink-0" />
                   </div>
                 ))}
               </div>
             )}
 
-            {/* Results - Show immediately without flickering if data exists */}
+            {/* Results */}
             {!isLoading && hasQuery && results.length > 0 && (
               <ul className="py-1">
                 {results.map((product) => (
@@ -229,11 +224,11 @@ export default function SearchOverlay({
               </ul>
             )}
 
-            {/* No results - Only show when fetching is completely done */}
+            {/* No results */}
             {!isFetching && !isLoading && hasQuery && results.length === 0 && (
-              <div className="flex flex-col items-center justify-center py-10 gap-2">
-                <IoSearchOutline className="w-8 h-8 text-gray-300" />
-                <p className="text-[13px] text-gray-500">
+              <div className="flex flex-col items-center justify-center py-10 gap-2 px-4">
+                <IoSearchOutline className="w-8 h-8 text-gray-300 shrink-0" />
+                <p className="text-[13px] text-gray-500 text-center break-all">
                   No results found for &quot;
                   <span className="text-[#D4A843] font-semibold">
                     {activeQuery}
@@ -245,12 +240,12 @@ export default function SearchOverlay({
 
             {/* Prompt state */}
             {!hasQuery && (
-              <div className="flex flex-col items-center justify-center py-10 gap-1 text-center">
-                <IoSearchOutline className="w-8 h-8 text-gray-300" />
-                <p className="text-[12px] text-gray-500 font-medium">
+              <div className="flex flex-col items-center justify-center py-10 gap-1 text-center px-4">
+                <IoSearchOutline className="w-8 h-8 text-gray-300 shrink-0" />
+                <p className="text-[12px] text-gray-500 font-medium font-trebuchet">
                   Start typing to search
                 </p>
-                <p className="text-[10px] text-gray-400 uppercase tracking-wider">
+                <p className="text-[10px] text-gray-400 uppercase tracking-px font-trebuchet">
                   Minimum 2 characters required
                 </p>
               </div>
@@ -263,13 +258,13 @@ export default function SearchOverlay({
           <button
             type="button"
             onClick={goToAllResults}
-            className="w-full flex items-center justify-center gap-2 py-3.5 bg-[#1A1A1A] hover:bg-[#252525] text-white text-[13px] font-trebuchet font-semibold tracking-px transition-colors"
+            className="w-full flex items-center justify-center gap-2 py-3.5 bg-[#1A1A1A] hover:bg-[#252525] text-white text-[13px] font-trebuchet font-semibold tracking-px transition-colors shrink-0 px-4"
           >
-            <IoSearchOutline size={15} />
-            <span>
+            <IoSearchOutline size={15} className="shrink-0" />
+            <span className="truncate max-w-[70vw] sm:max-w-[500px]">
               View all results for &quot;{activeQuery}&quot;
             </span>
-            <IoArrowForward size={15} />
+            <IoArrowForward size={15} className="shrink-0" />
           </button>
         )}
       </div>
