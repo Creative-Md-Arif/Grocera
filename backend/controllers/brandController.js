@@ -223,7 +223,9 @@ const getBrandById = asyncHandler(async (req, res) => {
     const [productCount, products] = await Promise.all([
       Product.countDocuments({ brand: brand.name }),
       Product.find({ brand: brand.name })
-        .select("name slug images price discountPercentage rating numReviews")
+        .select(
+          "name slug images price discountPercentage rating numReviews countInStock hasVariants variants defaultColorIndex defaultSizeIndex appliedCampaigns",
+        )
         .sort({ salesCount: -1, rating: -1 })
         .limit(12),
     ]);

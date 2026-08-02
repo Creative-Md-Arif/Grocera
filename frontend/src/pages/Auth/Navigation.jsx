@@ -12,6 +12,7 @@ import {
   HiOutlineHome,
   HiOutlineSquares2X2,
   HiOutlineShoppingBag,
+  HiOutlineHeart,
 } from "react-icons/hi2";
 import useBodyScrollLock from "../../hooks/useBodyScrollLock";
 import { MdOutlineDashboard } from "react-icons/md";
@@ -31,7 +32,6 @@ import { logout } from "@redux/features/auth/authSlice";
 import { CiShop, CiUser } from "react-icons/ci";
 import Logo from "../../components/Logo";
 import CartIcon from "../../components/CartIcon";
-import FavoriteIcon from "../../components/FavoriteIcon";
 import SearchOverlay from "../Auth/SearchOverlay";
 import { useFetchCategoriesQuery } from "@redux/api/categoryApiSlice";
 import { IoChevronDownOutline, IoChevronForward } from "react-icons/io5";
@@ -160,6 +160,7 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
   const cartItemsCount = useSelector(
     (state) => state.cart?.cartItems?.length ?? 0,
   );
+  const favoritesCount = useSelector((state) => state.favorites?.length ?? 0);
   const isCartOpen = useSelector((state) => state.cart?.isCartOpen ?? false);
 
   const dispatch = useDispatch();
@@ -520,12 +521,14 @@ const Navigation = ({ isMenuOpen, setIsMenuOpen }) => {
                 />
               )}
 
-              <div className="hidden md:flex flex-col items-center justify-center gap-0.5 text-gray-600 hover:text-[#D4A843] transition-colors duration-200 cursor-pointer">
-                <FavoriteIcon onClick={handleNavClick} />
-                <span className="text-[10px] font-trebuchet font-semibold uppercase tracking-px">
-                  Wishlist
-                </span>
-              </div>
+              <IconLabelLink
+                to="/favorite"
+                onClick={handleNavClick}
+                icon={<HiOutlineHeart size={20} />}
+                label="Wishlist"
+                badge={favoritesCount}
+                className="hidden md:flex"
+              />
 
               <div
                 onClick={() => dispatch(toggleCartSidebar(true))}

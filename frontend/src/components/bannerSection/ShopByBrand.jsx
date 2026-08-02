@@ -54,7 +54,7 @@ const ShopByBrand = () => {
 
   return (
     <section
-      className="py-10 sm:py-14 font-sans"
+      className="py-10 sm:py-14"
       aria-labelledby="shop-by-brand-heading"
     >
       <div className="max-w-screen-2xl mx-auto px-4">
@@ -84,7 +84,7 @@ const ShopByBrand = () => {
                 <Link
                   to={`/brand/${brand.slug || brand._id}`}
                   key={brand._id}
-                  className="group bg-white border border-gray-100/80 rounded-sm overflow-hidden flex flex-col h-full font-figtree shadow-sm hover:shadow-md transition-all duration-300 hover:border-gray-200"
+                  className="group bg-white border rounded-sm overflow-hidden flex flex-col h-full shadow-md transition-all duration-300 "
                 >
                   {/* Image area */}
                   <div className="relative aspect-square bg-gray-50 flex items-center justify-center shrink-0 overflow-hidden p-4">
@@ -103,7 +103,7 @@ const ShopByBrand = () => {
 
                   {/* Content area */}
                   <div className="px-3 py-3 flex flex-col grow border-t border-gray-50 text-center">
-                    <h3 className="text-[13px] font-medium text-gray-800 uppercase tracking-wide truncate group-hover:text-[#B88E2F] transition-colors">
+                    <h3 className="text-[13px] font-trebuchet font-medium text-gray-800 uppercase tracking-wide truncate group-hover:text-[#B88E2F] hover:underline transition-colors">
                       {brand.name}
                     </h3>
                   </div>
