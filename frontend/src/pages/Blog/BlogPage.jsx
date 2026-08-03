@@ -30,12 +30,15 @@ const BlogPage = () => {
   const blog = blogData?.data;
   const relatedBlogs = relatedData?.data?.filter(b => b._id !== blog?._id).slice(0, 3) || [];
 
+  // Cache current URL for sharing and canonical links
+  const currentUrl = window.location.href;
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [slugOrId]);
 
   const copyLink = () => {
-    navigator.clipboard.writeText(window.location.href);
+    navigator.clipboard.writeText(currentUrl);
     toast.success("Link copied to clipboard!");
   };
 
@@ -61,25 +64,58 @@ const BlogPage = () => {
 
   const sanitizedContent = DOMPurify.sanitize(blog.content, { USE_PROFILES: { html: true } });
 
+  // SEO: JSON-LD Structured Data for Article
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": blog.title,
+    "description": blog.excerpt,
+    "image": blog.featuredImage?.url,
+    "author": {
+      "@type": "Person",
+      "name": blog.author?.name || blog.author?.email?.split('@')[0] || "Admin"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Grocera",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://yourdomain.com/logo.png" // Update with actual Grocera logo URL
+      }
+    },
+    "datePublished": new Date(blog.publishedAt || blog.createdAt).toISOString(),
+    "dateModified": new Date(blog.updatedAt || blog.publishedAt || blog.createdAt).toISOString(),
+    "keywords": blog.seo?.metaKeywords || blog.tags?.join(", "),
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": currentUrl
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#fdfdfd] font-['Trebuchet_MS'] pb-16">
       
-      {/* SEO Meta Tags */}
+      {/* SEO Meta Tags & Structured Data */}
       <Helmet>
-        <title>{blog.seo?.metaTitle || blog.title}</title>
+        <title>{blog.seo?.metaTitle || `${blog.title} | Grocera`}</title>
         <meta name="description" content={blog.seo?.metaDescription || blog.excerpt} />
         <meta name="keywords" content={blog.seo?.metaKeywords} />
-        {blog.seo?.canonicalUrl && <link rel="canonical" href={blog.seo.canonicalUrl} />}
+        <link rel="canonical" href={blog.seo?.canonicalUrl || currentUrl} />
         
         <meta property="og:type" content="article" />
         <meta property="og:title" content={blog.social?.ogTitle || blog.title} />
         <meta property="og:description" content={blog.social?.ogDescription || blog.excerpt} />
         <meta property="og:image" content={blog.social?.ogImage || blog.featuredImage?.url} />
+        <meta property="og:url" content={currentUrl} />
         
         <meta name="twitter:card" content={blog.social?.twitterCard || "summary_large_image"} />
         <meta name="twitter:title" content={blog.social?.ogTitle || blog.title} />
         <meta name="twitter:description" content={blog.social?.ogDescription || blog.excerpt} />
         <meta name="twitter:image" content={blog.social?.ogImage || blog.featuredImage?.url} />
+        
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
       </Helmet>
 
       {/* Hero Section */}
@@ -88,6 +124,7 @@ const BlogPage = () => {
           src={blog.featuredImage?.url} 
           alt={blog.featuredImage?.altText || blog.title} 
           className="absolute inset-0 w-full h-full object-cover opacity-70"
+          fetchPriority="high" 
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
         
@@ -107,16 +144,19 @@ const BlogPage = () => {
             )}
           </div>
 
-          <h1 className="text-3xl md:text-5xl font-bold text-white font-['Playfair_Display'] leading-tight mb-4">
+          <h1 className="text-3xl md:text-5xl font-bold text-white font-['Playfair_Display'] leading-tight mb-4" itemProp="headline">
             {blog.title}
           </h1>
           
           <div className="flex flex-wrap items-center gap-4 text-white/80 text-sm font-medium">
-            <span className="flex items-center gap-2">
-              <FaUser size={12} /> {blog.author?.name || blog.author?.email?.split('@')[0] || "Admin"}
+            <span className="flex items-center gap-2" itemProp="author" itemScope itemType="https://schema.org/Person">
+              <FaUser size={12} /> <span itemProp="name">{blog.author?.name || blog.author?.email?.split('@')[0] || "Admin"}</span>
             </span>
             <span className="flex items-center gap-2">
-              <FaCalendarAlt size={12} /> {new Date(blog.publishedAt || blog.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
+              <FaCalendarAlt size={12} /> 
+              <time itemProp="datePublished" dateTime={new Date(blog.publishedAt || blog.createdAt).toISOString()}>
+                {new Date(blog.publishedAt || blog.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
+              </time>
             </span>
             <span className="flex items-center gap-2">
               <FaClock size={12} /> {blog.readingTime} min read
@@ -137,9 +177,11 @@ const BlogPage = () => {
           <FaArrowLeft size={10} /> Back to Blogs
         </Link>
 
-        <article className="bg-white border border-gray-100 shadow-sm rounded-sm p-6 md:p-10">
+        <article className="bg-white border border-gray-100 shadow-sm rounded-sm p-6 md:p-10" itemScope itemType="https://schema.org/BlogPosting">
+          <meta itemProp="mainEntityOfPage" content={currentUrl} />
+          
           {blog.excerpt && (
-            <div className="border-l-4 border-[#B88E2F] pl-4 mb-8 text-lg text-gray-600 italic font-medium">
+            <div className="border-l-4 border-[#B88E2F] pl-4 mb-8 text-lg text-gray-600 italic font-medium" itemProp="description">
               {blog.excerpt}
             </div>
           )}
@@ -148,6 +190,7 @@ const BlogPage = () => {
           <div 
             className="prose prose-lg max-w-none prose-headings:font-['Playfair_Display'] prose-headings:text-gray-800 prose-a:text-[#B88E2F] prose-img:rounded-sm"
             dangerouslySetInnerHTML={{ __html: sanitizedContent }} 
+            itemProp="articleBody"
           />
 
           {/* Tags */}
@@ -170,16 +213,16 @@ const BlogPage = () => {
           <div className="mt-8 pt-6 border-t border-gray-100 flex flex-wrap items-center justify-between gap-4">
             <h4 className="text-xs font-bold uppercase tracking-widest text-gray-500">Share this post</h4>
             <div className="flex items-center gap-2">
-              <a href={`https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`} target="_blank" rel="noopener noreferrer" className="w-9 h-9 flex items-center justify-center bg-gray-100 text-gray-600 rounded-sm hover:bg-black hover:text-white transition-colors">
+              <a href={`https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`} target="_blank" rel="noopener noreferrer" className="w-9 h-9 flex items-center justify-center bg-gray-100 text-gray-600 rounded-sm hover:bg-black hover:text-white transition-colors" aria-label="Share on Facebook">
                 <FaFacebookF size={14} />
               </a>
-              <a href={`https://twitter.com/intent/tweet?url=${window.location.href}&text=${blog.title}`} target="_blank" rel="noopener noreferrer" className="w-9 h-9 flex items-center justify-center bg-gray-100 text-gray-600 rounded-sm hover:bg-black hover:text-white transition-colors">
+              <a href={`https://twitter.com/intent/tweet?url=${currentUrl}&text=${blog.title}`} target="_blank" rel="noopener noreferrer" className="w-9 h-9 flex items-center justify-center bg-gray-100 text-gray-600 rounded-sm hover:bg-black hover:text-white transition-colors" aria-label="Share on Twitter">
                 <FaTwitter size={14} />
               </a>
-              <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${window.location.href}`} target="_blank" rel="noopener noreferrer" className="w-9 h-9 flex items-center justify-center bg-gray-100 text-gray-600 rounded-sm hover:bg-black hover:text-white transition-colors">
+              <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${currentUrl}`} target="_blank" rel="noopener noreferrer" className="w-9 h-9 flex items-center justify-center bg-gray-100 text-gray-600 rounded-sm hover:bg-black hover:text-white transition-colors" aria-label="Share on LinkedIn">
                 <FaLinkedinIn size={14} />
               </a>
-              <button onClick={copyLink} className="w-9 h-9 flex items-center justify-center bg-gray-100 text-gray-600 rounded-sm hover:bg-black hover:text-white transition-colors">
+              <button onClick={copyLink} className="w-9 h-9 flex items-center justify-center bg-gray-100 text-gray-600 rounded-sm hover:bg-black hover:text-white transition-colors" aria-label="Copy link to clipboard">
                 <FaLink size={14} />
               </button>
             </div>
@@ -204,6 +247,9 @@ const BlogPage = () => {
                       src={relBlog.featuredImage?.url} 
                       alt={relBlog.featuredImage?.altText || relBlog.title} 
                       className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy" 
+                      width="400"
+                      height="225"
                     />
                   </div>
                   <div className="p-4">
@@ -211,7 +257,10 @@ const BlogPage = () => {
                       {relBlog.title}
                     </h4>
                     <p className="text-xs text-gray-400 mt-2 flex items-center gap-2">
-                      <FaCalendarAlt size={10} /> {new Date(relBlog.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short" })}
+                      <FaCalendarAlt size={10} /> 
+                      <time dateTime={new Date(relBlog.createdAt).toISOString()}>
+                        {new Date(relBlog.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short" })}
+                      </time>
                     </p>
                   </div>
                 </Link>

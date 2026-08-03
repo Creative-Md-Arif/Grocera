@@ -46,9 +46,9 @@ const PurchaseInvoicePrint = ({ po }) => {
             {po.invoiceNumber && <p className="text-gray-600">Invoice No: {po.invoiceNumber}</p>}
           </div>
           <div className="text-right">
-            <h2 className="text-xl font-bold">Veloura</h2>
+            <h2 className="text-xl font-bold">Grocera</h2>
             <p className="text-gray-600">123 Business Street, Dhaka</p>
-            <p className="text-gray-600">support@veloura.com</p>
+            <p className="text-gray-600">support@grocera.com</p>
           </div>
         </div>
 

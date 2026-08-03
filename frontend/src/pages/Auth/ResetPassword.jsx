@@ -49,7 +49,7 @@ const ResetPassword = () => {
       style={{ fontFamily: '"Trebuchet MS", sans-serif' }}
     >
       <Helmet>
-        <title>Reset Password | Veloura</title>
+        <title>Reset Password | Grocera</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 

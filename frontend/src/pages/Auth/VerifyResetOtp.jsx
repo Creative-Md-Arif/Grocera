@@ -125,7 +125,7 @@ const VerifyResetOtp = () => {
       style={{ fontFamily: '"Trebuchet MS", sans-serif' }}
     >
       <Helmet>
-        <title>Verify OTP | Veloura</title>
+        <title>Verify OTP | Grocera</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 

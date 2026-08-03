@@ -82,7 +82,7 @@ const Login = () => {
       style={{ fontFamily: '"Trebuchet MS", sans-serif' }}
     >
       <Helmet>
-        <title>Login | Veloura</title>
+        <title>Login | Grocera</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 

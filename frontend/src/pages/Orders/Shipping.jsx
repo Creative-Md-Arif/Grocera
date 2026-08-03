@@ -476,7 +476,7 @@ const Shipping = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
       <Helmet>
-        <title>Checkout | Veloura</title>
+        <title>Checkout | Grocera</title>
         <meta
           name="description"
           content="Complete your secure checkout at AriX Co. Enter your delivery details and choose a payment method."

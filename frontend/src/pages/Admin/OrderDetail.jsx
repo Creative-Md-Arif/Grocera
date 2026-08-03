@@ -131,9 +131,9 @@ const InvoiceDocument = memo(function InvoiceDocument({ order }) {
       <div className="flex items-start justify-between pb-6 border-b-2 border-black">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-black font-['Playfair_Display']">
-            Veloura
+            Grocera
           </h1>
-          <p className="text-sm text-gray-600 mt-1">veloura.com</p>
+          <p className="text-sm text-gray-600 mt-1">grocera.com</p>
         </div>
         <div className="text-right">
           <h2 className="text-xl font-bold uppercase tracking-widest text-black font-['Playfair_Display']">
@@ -310,10 +310,10 @@ const InvoiceDocument = memo(function InvoiceDocument({ order }) {
       {/* Footer */}
       <div className="mt-10 pt-4 border-t border-gray-300 text-center">
         <p className="text-sm text-gray-500">
-          Thank you for shopping with Veloura
+          Thank you for shopping with Grocera
         </p>
         <p className="text-sm text-gray-400 mt-1">
-          veloura.com · This is a computer-generated invoice
+          grocera.com · This is a computer-generated invoice
         </p>
       </div>
     </div>

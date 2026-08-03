@@ -41,7 +41,7 @@ const About = () => {
                   whileHover={{ scale: 1.08 }}
                   transition={{ duration: 1, ease: "circOut" }}
                   src="https://i.imgur.com/WbQnbas.png" 
-                  alt="Veloura Command" 
+                  alt="Grocera Command" 
                   className="w-full h-auto object-cover"
                 />
               </div>
@@ -85,7 +85,7 @@ const About = () => {
                 &quot;We don&apos;t just provide hardware; we equip the pioneers of the digital frontier.&quot;
               </p>
               <p className="text-gray-600 text-base leading-relaxed">
-                At <b>Veloura</b>, our mission is to eliminate the gap between human potential and technological limits. We curate a specialized arsenal of high-end peripherals and smart solutions, ensuring every click, keypress, and command is executed with absolute precision.
+                At <b>Grocera</b>, our mission is to eliminate the gap between human potential and technological limits. We curate a specialized arsenal of high-end peripherals and smart solutions, ensuring every click, keypress, and command is executed with absolute precision.
               </p>
             </motion.div>
 
@@ -125,7 +125,7 @@ const About = () => {
 
       {/* Background Static Element */}
       <div className="absolute top-[20%] right-[-5%] text-[15vw] font-mono font-black text-gray-50/50 select-none -z-10 tracking-tighter">
-       Veloura
+       Grocera
       </div>
     </div>
   );

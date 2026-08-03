@@ -1,10 +1,7 @@
 import { useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useTrackOrderPublicQuery } from "@redux/api/orderTrackingApiSlice";
-import {
-  FaBoxOpen,
-  FaCheck,
-  FaTruck,
-} from "react-icons/fa6";
+import { FaBoxOpen, FaCheck, FaTruck } from "react-icons/fa6";
 import { FaMapMarkerAlt, FaSearch } from "react-icons/fa";
 
 const TrackOrder = () => {
@@ -52,6 +49,34 @@ const TrackOrder = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 font-sans">
+      {/* SEO Meta Tags */}
+      <Helmet>
+        <title>Track Your Order | Grocera</title>
+        <meta
+          name="description"
+          content="Track your Grocera order status in real-time. Enter your Order ID and email address to view your delivery tracking history and estimated arrival."
+        />
+        <meta
+          name="keywords"
+          content="Grocera track order, order tracking, delivery status, Grocera shipment tracking"
+        />
+        <meta name="robots" content="index, follow" />
+
+        <meta property="og:title" content="Track Your Order | Grocera" />
+        <meta
+          property="og:description"
+          content="Track your Grocera order status in real-time. Enter your Order ID and email address to view your delivery tracking history."
+        />
+        <meta property="og:type" content="website" />
+
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Track Your Order | Grocera" />
+        <meta
+          name="twitter:description"
+          content="Track your Grocera order status in real-time. Enter your Order ID and email address to view your delivery tracking history."
+        />
+      </Helmet>
+
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">

@@ -133,7 +133,7 @@ const Register = () => {
       style={{ fontFamily: '"Trebuchet MS", sans-serif' }}
     >
       <Helmet>
-        <title>Register | Veloura</title>
+        <title>Register | Grocera</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
@@ -228,7 +228,7 @@ const Register = () => {
                       if (errors.email)
                         setErrors((prev) => ({ ...prev, email: "" }));
                     }}
-                    placeholder="veloura@example.com"
+                    placeholder="grocera@example.com"
                     className={`w-full pl-9 pr-3 py-2.5 bg-gray-50 border ${errors.email ? "border-red-500 focus:border-red-500" : "border-gray-200 focus:border-[#007EFC]"} rounded-lg text-gray-700 text-[13px] focus:bg-white outline-none transition-all duration-200`}
                   />
                 </div>

@@ -5,11 +5,85 @@ import { FaCalendarAlt, FaClock, FaUser, FaFolder } from "react-icons/fa";
 import Loader from "../../components/Loader";
 
 const BlogListPage = () => {
-  const { data, isLoading, isError } = useGetBlogsQuery({ status: "published" });
+  const { data, isLoading, isError } = useGetBlogsQuery({
+    status: "published",
+  });
   const blogs = data?.data || [];
 
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    // SEO: Document Title & Meta Tags
+    document.title = "Grocera Blog | Insights, Tips & Grocery Guides";
+
+    const metaTags = [
+      {
+        name: "description",
+        content:
+          "Read the latest insights, tips, and stories from Grocera. Stay updated with industry trends, grocery guides, and product highlights.",
+      },
+      {
+        name: "keywords",
+        content:
+          "Grocera blog, grocery tips, online grocery, food industry, recipes, grocery guides",
+      },
+      {
+        property: "og:title",
+        content: "Grocera Blog | Insights, Tips & Grocery Guides",
+      },
+      {
+        property: "og:description",
+        content:
+          "Read the latest insights, tips, and stories from Grocera. Stay updated with industry trends, grocery guides, and product highlights.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      {
+        name: "twitter:title",
+        content: "Grocera Blog | Insights, Tips & Grocery Guides",
+      },
+      {
+        name: "twitter:description",
+        content:
+          "Read the latest insights, tips, and stories from Grocera. Stay updated with industry trends, grocery guides, and product highlights.",
+      },
+    ];
+
+    const createdMetas = [];
+    metaTags.forEach((tag) => {
+      const selector = tag.name
+        ? `meta[name="${tag.name}"]`
+        : `meta[property="${tag.property}"]`;
+      let meta = document.querySelector(selector);
+
+      if (!meta) {
+        meta = document.createElement("meta");
+        if (tag.name) meta.setAttribute("name", tag.name);
+        if (tag.property) meta.setAttribute("property", tag.property);
+        document.head.appendChild(meta);
+        createdMetas.push(meta);
+      }
+      meta.setAttribute("content", tag.content);
+    });
+
+    // SEO: JSON-LD Structured Data
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      name: "Grocera Blog",
+      description:
+        "Insights, tips, and stories about our products and the industry.",
+      url: window.location.href,
+    });
+    document.head.appendChild(script);
+
+    // Cleanup to prevent memory leaks and duplicate tags
+    return () => {
+      createdMetas.forEach((meta) => meta.remove());
+      script.remove();
+    };
   }, []);
 
   if (isLoading) {
@@ -24,7 +98,10 @@ const BlogListPage = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#fdfdfd] font-['Trebuchet_MS']">
         <p className="text-gray-500 mb-4">Failed to load blogs.</p>
-        <Link to="/" className="bg-black text-white px-6 py-2 rounded-sm uppercase text-sm font-bold">
+        <Link
+          to="/"
+          className="bg-black text-white px-6 py-2 rounded-sm uppercase text-sm font-bold"
+        >
           Go Home
         </Link>
       </div>
@@ -33,11 +110,10 @@ const BlogListPage = () => {
 
   return (
     <div className="min-h-screen bg-[#fdfdfd] font-['Trebuchet_MS'] pb-16">
-      
       <header className="bg-white border-b border-gray-100 pt-32 pb-12 mb-8">
         <div className="max-w-5xl mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-800 font-['Playfair_Display'] mb-4">
-            Our Blog
+            Grocera Blog
           </h1>
           <p className="text-gray-500 max-w-2xl mx-auto">
             Insights, tips, and stories about our products and the industry.
@@ -53,47 +129,98 @@ const BlogListPage = () => {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            itemScope
+            itemType="https://schema.org/Blog"
+          >
             {blogs.map((blog) => (
-              <Link 
-                key={blog._id} 
-                to={`/blog/${blog.slug}`} 
+              <Link
+                key={blog._id}
+                to={`/blog/${blog.slug}`}
                 className="group bg-white border border-gray-100 rounded-sm overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                itemProp="blogPost"
+                itemScope
+                itemType="https://schema.org/BlogPosting"
               >
                 <div className="overflow-hidden aspect-w-16 aspect-h-9 bg-gray-100">
-                  <img 
-                    src={blog.featuredImage?.url} 
-                    alt={blog.featuredImage?.altText || blog.title} 
+                  <img
+                    src={blog.featuredImage?.url}
+                    alt={blog.featuredImage?.altText || blog.title}
                     className="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                    width="800"
+                    height="400"
+                    itemProp="image"
                   />
                 </div>
-                
+
                 <div className="p-6">
                   {/* Category & SubCategory */}
                   <div className="flex items-center gap-2 mb-2 text-xs font-bold uppercase tracking-widest text-[#B88E2F]">
-                    {blog.category && <span className="flex items-center gap-1"><FaFolder size={10} /> {blog.category}</span>}
-                    {blog.subCategory && <span className="text-gray-400">/ {blog.subCategory}</span>}
+                    {blog.category && (
+                      <span
+                        className="flex items-center gap-1"
+                        itemProp="articleSection"
+                      >
+                        <FaFolder size={10} /> {blog.category}
+                      </span>
+                    )}
+                    {blog.subCategory && (
+                      <span className="text-gray-400">
+                        / {blog.subCategory}
+                      </span>
+                    )}
                   </div>
 
-                  <h2 className="text-lg font-bold text-gray-800 font-['Playfair_Display'] mb-3 group-hover:text-black transition-colors line-clamp-2">
+                  <h2
+                    className="text-lg font-bold text-gray-800 font-['Playfair_Display'] mb-3 group-hover:text-black transition-colors line-clamp-2"
+                    itemProp="headline"
+                  >
                     {blog.title}
                   </h2>
-                  <p className="text-sm text-gray-500 mb-4 line-clamp-3">
+                  <p
+                    className="text-sm text-gray-500 mb-4 line-clamp-3"
+                    itemProp="description"
+                  >
                     {blog.excerpt}
                   </p>
-                  
+
                   <div className="flex items-center justify-between border-t border-gray-100 pt-4 text-xs text-gray-400 font-medium">
                     <div className="flex items-center gap-3">
                       <span className="flex items-center gap-1">
-                        <FaCalendarAlt size={10} /> {new Date(blog.publishedAt || blog.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short" })}
+                        <FaCalendarAlt size={10} />
+                        <time
+                          itemProp="datePublished"
+                          dateTime={new Date(
+                            blog.publishedAt || blog.createdAt,
+                          ).toISOString()}
+                        >
+                          {new Date(
+                            blog.publishedAt || blog.createdAt,
+                          ).toLocaleDateString("en-GB", {
+                            day: "2-digit",
+                            month: "short",
+                          })}
+                        </time>
                       </span>
                       <span className="flex items-center gap-1">
                         <FaClock size={10} /> {blog.readingTime} min
                       </span>
                     </div>
                     {/* Author Name/Email */}
-                    <span className="flex items-center gap-1 truncate max-w-[100px]">
-                      <FaUser size={10} /> {blog.author?.name || blog.author?.email?.split('@')[0] || "Admin"}
+                    <span
+                      className="flex items-center gap-1 truncate max-w-[100px]"
+                      itemProp="author"
+                      itemScope
+                      itemType="https://schema.org/Person"
+                    >
+                      <FaUser size={10} />{" "}
+                      <span itemProp="name">
+                        {blog.author?.name ||
+                          blog.author?.email?.split("@")[0] ||
+                          "Admin"}
+                      </span>
                     </span>
                   </div>
                 </div>

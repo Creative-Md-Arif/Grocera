@@ -57,7 +57,7 @@ const Logo = ({ className = "" }) => {
       <div className="flex flex-col leading-none">
         <div className="flex items-baseline whitespace-nowrap">
           <span className="text-2xl font-black font-playfair tracking-px text-white uppercase">
-            VeloUra
+            Grocera
           </span>
         </div>
       </div>

@@ -375,7 +375,7 @@ const initSSLCommerz = asyncHandler(async (req, res) => {
     cus_email:
       order.user && order.user.email
         ? order.user.email
-        : order.shippingAddress.email || "guest@arixco.com",
+        : order.shippingAddress.email || "guest@grocera.com",
     cus_add1: order.shippingAddress.address || "N/A",
     cus_city:
       order.shippingAddress.city || order.shippingAddress.thana || "Dhaka",

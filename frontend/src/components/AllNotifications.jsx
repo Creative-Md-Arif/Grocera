@@ -144,7 +144,7 @@ const AllNotifications = () => {
         {/* ফুটার হেল্প টেক্সট */}
         <div className="mt-8 text-center">
            <p className="text-[10px] text-gray-400 font-mono uppercase tracking-widest font-bold">
-             Veloura Security & Notification Protocol v2.0
+             Grocera Security & Notification Protocol v2.0
            </p>
         </div>
       </div>

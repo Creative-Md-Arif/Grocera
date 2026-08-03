@@ -64,7 +64,7 @@ const SiteSettingManage = () => {
   const [textLogo, setTextLogo] = useState({
     fontSize: "32px",
     fontWeight: "bold",
-    parts: [{ text: "Veloura ", color: "#000000" }],
+    parts: [{ text: "Grocera ", color: "#000000" }],
   });
 
   const [isUploadingLogo, setIsUploadingLogo] = useState(false);
@@ -90,7 +90,7 @@ const SiteSettingManage = () => {
         data.data.textLogo || {
           fontSize: "32px",
           fontWeight: "bold",
-          parts: [{ text: "Veloura ", color: "#000000" }],
+          parts: [{ text: "Grocera ", color: "#000000" }],
         },
       );
     }
@@ -327,7 +327,7 @@ const SiteSettingManage = () => {
                             <input
                               type="text"
                               className={`${inputClass} flex-1`}
-                              placeholder={`Part ${index + 1} (e.g. Veloura)`}
+                              placeholder={`Part ${index + 1} (e.g. Grocera)`}
                               value={part.text}
                               onChange={(e) =>
                                 handleTextPartChange(
@@ -418,7 +418,7 @@ const SiteSettingManage = () => {
                       onChange={(e) =>
                         setContact({ ...contact, email: e.target.value })
                       }
-                      placeholder="support@veloura.com"
+                      placeholder="support@Grocera.com"
                     />
                   </div>
 
@@ -525,7 +525,7 @@ const SiteSettingManage = () => {
                   className={inputClass}
                   value={copyrightText}
                   onChange={(e) => setCopyrightText(e.target.value)}
-                  placeholder="Veloura — All rights reserved."
+                  placeholder="Grocera — All rights reserved."
                 />
               </motion.section>
 

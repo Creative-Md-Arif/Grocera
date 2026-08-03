@@ -42,7 +42,7 @@ const ForgotPassword = () => {
       style={{ fontFamily: '"Trebuchet MS", sans-serif' }}
     >
       <Helmet>
-        <title>Forgot Password | Veloura</title>
+        <title>Forgot Password | Grocera</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 

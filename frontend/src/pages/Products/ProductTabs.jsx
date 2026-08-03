@@ -224,7 +224,7 @@ const ProductTabs = ({
                               <div className="mt-3 ml-12 bg-blue-50 border-l-4 border-blue-600 p-3 rounded-r-md">
                                 <div className="flex items-center gap-2 mb-1">
                                   <span className="text-[11px] font-bold uppercase tracking-wider text-blue-800">
-                                    Answer from Veloura
+                                    Answer from Grocera
                                   </span>
                                 </div>
                                 <p className="text-[13px] text-gray-700">

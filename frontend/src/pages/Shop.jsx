@@ -536,12 +536,12 @@ const Shop = () => {
       <Helmet>
         <title>
           {urlKeyword
-            ? `Search: ${urlKeyword} | Veloura`
-            : "Shop All Products | Veloura"}
+            ? `Search: ${urlKeyword} | Grocera`
+            : "Shop All Products | Grocera"}
         </title>
         <meta
           name="description"
-          content="Shop premium quality products at Veloura. Filter by category, price, and brand to find exactly what you need. Fast delivery and secure payment."
+          content="Shop premium quality products at Grocera. Filter by category, price, and brand to find exactly what you need. Fast delivery and secure payment."
         />
       </Helmet>
 

@@ -330,15 +330,15 @@ const ProductDetails = () => {
     <div className="bg-white min-h-screen">
       {/* ── SEO Optimization using Helmet ── */}
       <Helmet>
-        <title>{`${product.name} - Buy Online at Best Price | Veloura`}</title>
+        <title>{`${product.name} - Buy Online at Best Price | Grocera`}</title>
         <meta
           name="description"
           content={
             product.description?.substring(0, 150) ||
-            `Buy ${product.name} online at Veloura. Best deals, fast delivery, and secure payment.`
+            `Buy ${product.name} online at Grocera. Best deals, fast delivery, and secure payment.`
           }
         />
-        <meta property="og:title" content={`${product.name} | Veloura`} />
+        <meta property="og:title" content={`${product.name} | Grocera`} />
         <meta
           property="og:description"
           content={product.description?.substring(0, 150)}
@@ -477,7 +477,7 @@ const ProductDetails = () => {
                   Brand:
                 </span>
                 <span className="text-[14px] font-trebuchet font-bold text-[#000000]">
-                  {product.brand || "Veloura"}
+                  {product.brand || "Grocera"}
                 </span>
               </div>
             </div>
